@@ -1,3 +1,5 @@
+import GString.GStringGraph;
+import org.openscience.cdk.Bond;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.Intractable;
@@ -28,31 +30,48 @@ public class Main {
 
 
         //region Playing with SSSR
-        /*AllRingsFinder arf = new AllRingsFinder();
+        AllRingsFinder arf = new AllRingsFinder();
         int maxRings = 0;
         String maxRingsId = "";
         IRingSet maxRingsSet = null;
 
+        int count = 0;
+
         CycleFinder cf = Cycles.mcb();
+
+        for (IAtomContainer m : db.values()) {
+            String id = m.getProperty("chembl_id");
+            System.out.println(id);
+            GStringGraph g = new GStringGraph(m);
+            System.out.println();
+        }
+
         for (IAtomContainer m : db.values()) {
             try {
-                Cycles cycles = cf.find(m);
+                Cycles cycles = cf.find(m, 10);
                 IRingSet rs  = cycles.toRingSet();
                 if (rs.getAtomContainerCount() > maxRings && rs.getAtomContainerCount() < 10) {
                     maxRings = rs.getAtomContainerCount();
                     maxRingsId = m.getProperty("chembl_id");
                     maxRingsSet = rs;
+
+                    System.out.println(maxRingsId);
+                    GStringGraph g = new GStringGraph(m);
+                    System.out.println();
                 }
+
+
             } catch (Intractable e) {
                 // ignore error - MCB should never be intractable
             }
         }
 
+
         System.out.println(maxRings);
         System.out.println(maxRingsId);
         maxRingsSet.atomContainers().forEach((a) -> {
             System.out.println(a.getAtomCount());
-        });*/
+        });
         //endregion
 
         //region Simple cycle test
