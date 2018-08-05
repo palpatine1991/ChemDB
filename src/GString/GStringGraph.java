@@ -90,21 +90,11 @@ public class GStringGraph {
         nodes.add(node);
 
         processedRings.put(ring, node);
-        int specialAtomCount = 0;
-        int specialBondCount = 0;
 
-        //setting special bond count
-        for (Iterator<IBond> i = ring.bonds().iterator(); i.hasNext();) {
-            IBond bond = i.next();
-
-            bond.setIsInRing(true);
-            if (!isDefaultBond(bond)) {
-                specialBondCount++;
-            }
-        }
-        node.specialBondCount = specialBondCount;
+        node.specialBondCount = getRingSpecialBondCount(ring);
 
         //setting special atom count and finding neighbours
+        int specialAtomCount = 0;
         for (Iterator<IAtom> i = ring.atoms().iterator(); i.hasNext();) {
             IAtom atom = i.next();
             if (!isDefaultAtom(atom)) {
@@ -121,20 +111,52 @@ public class GStringGraph {
                 processedAtoms.put(atom, relations);
             }
 
-            IRingSet atomRings = completeRingSet.getRings(atom);
-            atomRings.atomContainers().forEach((ringContainer) -> {
-                if (ringContainer == ring) {
-                    return;
-                }
-
-                if (processedRings.containsKey(ringContainer) && !node.isNeighbour(processedRings.get(ringContainer))) {
-                    GStringEdge edge = new GStringEdge(false, node, processedRings.get(ringContainer));
-                    edge.registerEdgeToNodes();
-                }
-            });
+            createCycleEdgesForAtom(atom, ring, node);
         }
         node.specialAtomCount = specialAtomCount;
 
+    }
+
+    /**
+     * Creates and registers GStringEdges from the processed ring to already processed connected rings
+     * In this context connected means sharing atom. Rings which are connected via bond are processed later on.
+     * @param atom atom in ring being processed
+     * @param ring processed ring containing the atom
+     * @param cycleNode GString node belonging to processed ring
+     */
+    private void createCycleEdgesForAtom(IAtom atom, IAtomContainer ring, GStringNode cycleNode) {
+        IRingSet atomRings = completeRingSet.getRings(atom);
+        atomRings.atomContainers().forEach((ringContainer) -> {
+            if (ringContainer == ring) {
+                return;
+            }
+
+            if (processedRings.containsKey(ringContainer) && !cycleNode.isNeighbour(processedRings.get(ringContainer))) {
+                GStringEdge edge = new GStringEdge(false, cycleNode, processedRings.get(ringContainer));
+                edge.registerEdgeToNodes();
+            }
+        });
+    }
+
+    /**
+     * Also sets the isInRing flag
+     * @param ring
+     * @return
+     */
+    private int getRingSpecialBondCount(IAtomContainer ring) {
+        int specialBondCount = 0;
+
+        //setting special bond count
+        for (Iterator<IBond> i = ring.bonds().iterator(); i.hasNext();) {
+            IBond bond = i.next();
+
+            bond.setIsInRing(true);
+            if (!isDefaultBond(bond)) {
+                specialBondCount++;
+            }
+        }
+
+        return specialBondCount;
     }
 
     private boolean isDefaultAtom(IAtom atom) {
