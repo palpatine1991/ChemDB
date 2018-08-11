@@ -10,6 +10,10 @@ public class GStringNode {
     int branchCount;
     int size;
 
+    //Just a helper flag which idicates whether the original atom from which this node has been created was special.
+    //It is useful when y
+    boolean isOriginallySpecial;
+
     LinkedList<GStringEdge> edges = new LinkedList<>();
 
     public GStringNode(GStringNodeType type, int size, int specialAtomCount, int specialBondCount, int branchCount) {

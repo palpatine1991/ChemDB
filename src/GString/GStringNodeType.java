@@ -4,7 +4,6 @@ public enum GStringNodeType {
     CYCLE("Cycle"),
     STAR("Star"),
     PATH("Path"),
-    BASIC("Basic"),
     TEMP("Temp");
 
     public String id;

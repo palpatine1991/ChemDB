@@ -13,8 +13,6 @@ public class GStringEdge {
         this.isSpecial = isSpecial;
         this.node1 = node1;
         this.node2 = node2;
-
-
     }
 
     public void registerEdgeToNodes() {
@@ -34,5 +32,20 @@ public class GStringEdge {
         } else {
             return null;
         }
+    }
+
+    public void reconnectEdge(GStringNode originalNode, GStringNode newNode) {
+        if (originalNode.equals(node1)) {
+            node1 = newNode;
+        }
+        else if (originalNode.equals(node2)) {
+            node2 = newNode;
+        }
+        else {
+            System.err.println("Replacing node in edge where it is not registered!");
+            return;
+        }
+
+        //newNode.edges.add(this);
     }
 }

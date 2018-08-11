@@ -21,28 +21,111 @@ public class GStringGraph {
     private HashSet<IAtomContainer> openRings = new HashSet<>();
     private IAtomContainer molecule;
     private IRingSet completeRingSet;
+    private int starFanoutTreshold = 4;
 
-    //TODO: build graph
     public GStringGraph(IAtomContainer molecule) {
         this.molecule = molecule;
 
         try {
             Cycles cycles = cycleFinder.find(molecule, 10);
             completeRingSet = cycles.toRingSet();
-
-            completeRingSet.atomContainers().forEach((ring) -> {
-                processRing(ring);
-            });
-
-            molecule.atoms().forEach((atom) -> {
-                processAtom(atom);
-            });
-
-            //TODO steps after parsing rings
         }
         catch (Intractable e) {
             // ignore error - MCB should never be intractable
         }
+
+        createGraphWithCycles();
+        findAndProcessStars();
+        //TODO parse paths
+    }
+
+    private void findAndMarkStars() {
+        //find and create stars. not deleting fanout nodes, yet
+        for (GStringNode node : nodes) {
+            if (node.type.equals(GStringNodeType.TEMP) && node.edges.size() >= starFanoutTreshold) {
+                int starSize = node.edges.size();
+                int specialAtomsCount = node.specialAtomCount;
+                int specialBondCount = 0;
+                for (GStringEdge edge : node.edges) {
+                    GStringNode otherNode = edge.getOther(node);
+                    if (otherNode.type.equals(GStringNodeType.CYCLE)) {
+                        starSize--;
+                    }
+                    else {
+                        if (edge.isSpecial) {
+                            specialBondCount++;
+                        }
+                        if (otherNode.isOriginallySpecial) {
+                            specialAtomsCount++;
+                        }
+                    }
+                }
+
+                if (starSize >= starFanoutTreshold) {
+                    node.type = GStringNodeType.STAR;
+                    node.specialAtomCount = specialAtomsCount;
+                    node.specialBondCount = specialBondCount;
+                    node.size = starSize;
+                }
+            }
+        }
+    }
+
+    private void processStarEdges() {
+        LinkedList<GStringNode> nodesToBeRemoved = new LinkedList<>();
+
+        //remove star fanout nodes
+        for (GStringNode centerNode : nodes) {
+            if (!centerNode.type.equals(GStringNodeType.STAR)) {
+                continue;
+            }
+
+            LinkedList<GStringEdge> edgesToBeRemoved = new LinkedList<>();
+            LinkedList<GStringEdge> edgesToBeAdded = new LinkedList<>();
+
+            for (GStringEdge starEdge : centerNode.edges) {
+                GStringNode fanoutNode = starEdge.getOther(centerNode);
+
+                //We only care about temp nodes
+                if (!fanoutNode.type.equals(GStringNodeType.TEMP)) {
+                    continue;
+                }
+
+                //reconnect all edges from fanout node to the center
+                for (GStringEdge fanoutEdge : fanoutNode.edges) {
+                    //fanout edge should be deleted
+                    if (fanoutEdge.doesContainNode(centerNode)) {
+                        edgesToBeRemoved.add(fanoutEdge);
+                        continue;
+                    }
+
+                    fanoutEdge.reconnectEdge(fanoutNode, centerNode);
+                    edgesToBeAdded.add(fanoutEdge);
+                }
+
+                nodesToBeRemoved.add(fanoutNode);
+            }
+
+            centerNode.edges.removeAll(edgesToBeRemoved);
+            centerNode.edges.addAll(edgesToBeAdded);
+        }
+
+        nodes.removeAll(nodesToBeRemoved);
+    }
+
+    private void findAndProcessStars() {
+        findAndMarkStars();
+        processStarEdges();
+    }
+
+    private void createGraphWithCycles() {
+        completeRingSet.atomContainers().forEach((ring) -> {
+            processRing(ring);
+        });
+
+        molecule.atoms().forEach((atom) -> {
+            processAtom(atom);
+        });
     }
 
     private void processAtom(IAtom atom) {
@@ -52,6 +135,7 @@ public class GStringGraph {
             int nonDefaultCount = (isDefaultAtom(atom)) ? 0 : 1;
 
             GStringNode node = new GStringNode(GStringNodeType.TEMP, 1, nonDefaultCount, 0, 0);
+            node.isOriginallySpecial = nonDefaultCount == 1;
             nodes.add(node);
             linkedNodes = new LinkedList<GStringNode>();
             linkedNodes.add(node);
