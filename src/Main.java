@@ -4,8 +4,10 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.Intractable;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.graph.ConnectedComponents;
 import org.openscience.cdk.graph.CycleFinder;
 import org.openscience.cdk.graph.Cycles;
+import org.openscience.cdk.graph.GraphUtil;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
@@ -40,8 +42,32 @@ public class Main {
         CycleFinder cf = Cycles.mcb();
 
         for (IAtomContainer m : db.values()) {
+            if (!m.getProperty("chembl_id").equals("CHEMBL39830")) {
+                continue;
+            }
+
             String id = m.getProperty("chembl_id");
             System.out.println(id);
+
+            //testing connectivity
+            int[][] adj = GraphUtil.toAdjList(m);
+            ConnectedComponents cc = new ConnectedComponents(adj);
+            int[] components = cc.components();
+
+            boolean nonconnected = false;
+
+            for (int v = 0; v < adj.length; v++) {
+                if (components[v] > 1) {
+                    nonconnected = true;
+                    break;
+                }
+            }
+
+            if (nonconnected) {
+                //TODO: handle non-connected structures
+                continue;
+            }
+
             GStringGraph g = new GStringGraph(m);
             System.out.println();
         }

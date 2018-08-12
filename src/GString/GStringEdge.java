@@ -30,6 +30,7 @@ public class GStringEdge {
         } else if (node == this.node2) {
             return this.node1;
         } else {
+            assert false : "Asking edge for 'other node' when specified node is it present in edge";
             return null;
         }
     }
@@ -42,10 +43,7 @@ public class GStringEdge {
             node2 = newNode;
         }
         else {
-            System.err.println("Replacing node in edge where it is not registered!");
-            return;
+            assert false : "Replacing node in edge where it is not registered!";
         }
-
-        //newNode.edges.add(this);
     }
 }

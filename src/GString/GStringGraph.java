@@ -6,10 +6,17 @@ import org.openscience.cdk.graph.CycleFinder;
 import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
+
+class NewNodeEdgeResult {
+    public GStringNode newNode;
+    public GStringEdge newEdge;
+
+    public NewNodeEdgeResult(GStringNode newNode, GStringEdge newEdge) {
+        this.newEdge = newEdge;
+        this.newNode = newNode;
+    }
+}
 
 public class GStringGraph {
     private static CycleFinder cycleFinder = Cycles.mcb();
@@ -18,10 +25,9 @@ public class GStringGraph {
 
     private HashMap<IAtom, LinkedList<GStringNode>> processedAtoms = new HashMap<>();
     private HashMap<IAtomContainer, GStringNode> processedRings = new HashMap<>();
-    private HashSet<IAtomContainer> openRings = new HashSet<>();
     private IAtomContainer molecule;
     private IRingSet completeRingSet;
-    private int starFanoutTreshold = 4;
+    private int starFanoutTreshold = 3;
 
     public GStringGraph(IAtomContainer molecule) {
         this.molecule = molecule;
@@ -34,9 +40,228 @@ public class GStringGraph {
             // ignore error - MCB should never be intractable
         }
 
+        for (IBond bond : molecule.bonds()) {
+            bond.setIsInRing(false);
+        }
+
         createGraphWithCycles();
         findAndProcessStars();
-        //TODO parse paths
+        findAndProcessPaths();
+        //TODO process branches
+    }
+
+    private void findAndProcessPaths() {
+        LinkedList<GStringNode> processedNodes = new LinkedList<>();
+
+        for (GStringNode node : nodes) {
+            if (!node.type.equals(GStringNodeType.TEMP)) {
+                processedNodes.add(node);
+            }
+        }
+
+        //if there are no special nodes -> only 1 path exists.
+        if (processedNodes.size() == 0) {
+            //find ending one
+            for (GStringNode node : nodes) {
+                if (node.edges.size() == 1) {
+                    node.type = GStringNodeType.PATH;
+                    node.size = 1;
+                    processPathNode(node, node.edges.getFirst().getOther(node));
+                }
+            }
+
+        }
+
+        for (GStringNode processedNode : processedNodes) {
+            processAdjacentPaths(processedNode);
+        }
+    }
+
+    private void processAdjacentPaths(GStringNode node) {
+        ListIterator<GStringEdge> iterator = node.edges.listIterator();
+
+        while (iterator.hasNext()) {
+            GStringEdge startingEdge = iterator.next();
+
+            GStringNode otherNode = startingEdge.getOther(node);
+
+            //paths can consist only of TEMP nodes
+            if (!otherNode.type.equals(GStringNodeType.TEMP)) {
+                continue;
+            }
+
+            //not a path, just a branch
+            if (otherNode.edges.size() == 1) {
+                continue;
+            }
+
+            otherNode.type = GStringNodeType.PATH;
+            otherNode.size = 1;
+
+            //If the node is connecting 2 or more already processed nodes,
+            //we want to just connect them by path of size 1 and process its TEMP neighbours
+            if (getNonTempNeighboursCount(otherNode) > 1) {
+                processAdjacentPaths(otherNode);
+                return;
+            }
+
+            LinkedList<GStringNode> nextPathNodes = getOtherTempNeighbours(otherNode, node);
+
+            switch(nextPathNodes.size()) {
+                case 0:
+                    //we are done
+                    break;
+                case 1:
+                    processPathNode(otherNode, nextPathNodes.getFirst());
+                    break;
+                case 2:
+                    NewNodeEdgeResult splitResult = splitNode(otherNode, nextPathNodes.getFirst());
+                    processPathNode(otherNode, nextPathNodes.getFirst());
+
+                    //There is a cycle bigger then threshold. Whole cycle is consumed as one path.
+                    //We need to disconnect the cycle on one end and treat it as a path
+                    if (!nodes.contains(nextPathNodes.getLast())) {
+                        nodes.remove(splitResult.newNode);
+                        for (GStringEdge edge : splitResult.newNode.edges) {
+                            edge.getOther(splitResult.newNode).edges.remove(edge);
+                        }
+                    }
+                    else {
+                        iterator.add(splitResult.newEdge);
+                        processPathNode(splitResult.newNode, nextPathNodes.getLast());
+                    }
+
+                    break;
+                default:
+                    assert false : "Temp node has 3 temp neighbours!";
+            }
+        }
+    }
+
+    //Duplicates the node and each new node will have only 1 TEMP neighbour. Returns new node and edge
+    //originNode should be PATH node with exactly 2 TEMP neighbours and 1 non-TEMP neighbour
+    private NewNodeEdgeResult splitNode(GStringNode originNode, GStringNode originNodeContinuation) {
+        assert originNode.edges.size() == 3;
+        assert originNode.type.equals(GStringNodeType.PATH);
+        assert originNode.size == 1;
+        assert originNodeContinuation.type.equals(GStringNodeType.TEMP);
+
+        GStringNode newNode = new GStringNode(
+            GStringNodeType.PATH,
+            1,
+            originNode.specialAtomCount,
+            originNode.specialBondCount,
+            0
+        );
+
+        nodes.add(newNode);
+
+        GStringEdge toBeRemovedEdge = null;
+        GStringEdge duplicateEdge = null;
+
+        boolean continuationVisited = false;
+        boolean nonTempVisited = false;
+        boolean otherTempVisited = false;
+
+        for (GStringEdge edge : originNode.edges) {
+            GStringNode otherNode = edge.getOther(originNode);
+            if (otherNode.equals(originNodeContinuation)) {
+                //nothing, this edge should be unchanged
+
+                continuationVisited = true;
+            }
+            else if (!otherNode.type.equals(GStringNodeType.TEMP)) {
+                //we need to duplicate this edge to new node
+                duplicateEdge = new GStringEdge(edge.isSpecial, otherNode, newNode);
+                newNode.edges.add(duplicateEdge);
+
+                nonTempVisited = true;
+            }
+            else {
+                edge.reconnectEdge(originNode, newNode);
+                newNode.edges.add(edge);
+                toBeRemovedEdge = edge;
+
+                otherTempVisited = true;
+            }
+        }
+
+        assert continuationVisited;
+        assert nonTempVisited;
+        assert otherTempVisited;
+
+        originNode.edges.remove(toBeRemovedEdge);
+
+        return new NewNodeEdgeResult(newNode, duplicateEdge);
+    }
+
+    private void processPathNode(GStringNode pathNode, GStringNode nextNode) {
+        if (nextNode == null) {
+            return;
+        }
+
+        GStringNode pathContinuation = getOtherTempNeighbour(nextNode, pathNode);
+        joinNodeToPath(pathNode, nextNode);
+        processPathNode(pathNode, pathContinuation);
+    }
+
+    private int getNonTempNeighboursCount(GStringNode node) {
+        int result = 0;
+
+        for (GStringEdge edge : node.edges) {
+            if (!edge.getOther(node).type.equals(GStringNodeType.TEMP)) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    private LinkedList<GStringNode> getOtherTempNeighbours(GStringNode node, GStringNode badNeighbour) {
+        LinkedList<GStringNode> result = new LinkedList<>();
+
+        for (GStringEdge edge : node.edges) {
+            if (!edge.getOther(node).equals(badNeighbour) && edge.getOther(node).type.equals(GStringNodeType.TEMP)) {
+                result.add(edge.getOther(node));
+            }
+        }
+
+        return result;
+    }
+
+    private GStringNode getOtherTempNeighbour(GStringNode node, GStringNode badNeighbour) {
+        GStringNode result = null;
+
+        for (GStringEdge edge : node.edges) {
+            if (!edge.getOther(node).equals(badNeighbour) && edge.getOther(node).type.equals(GStringNodeType.TEMP)) {
+                if (result != null) {
+                    System.err.println("Next path node has more than one TEMP neighbours!");
+                }
+                result = edge.getOther(node);
+            }
+        }
+
+        return result;
+    }
+
+    private void joinNodeToPath(GStringNode pathNode, GStringNode nodeToJoin) {
+        for (GStringEdge edge : nodeToJoin.edges) {
+            if (edge.getOther(nodeToJoin).equals(pathNode)) {
+                pathNode.edges.remove(edge);
+                if (edge.isSpecial) {
+                    pathNode.specialBondCount++;
+                }
+            }
+            else {
+                edge.reconnectEdge(nodeToJoin, pathNode);
+                pathNode.edges.add(edge);
+            }
+        }
+
+        pathNode.size++;
+        pathNode.specialAtomCount += nodeToJoin.specialAtomCount;
+
+        nodes.remove(nodeToJoin);
     }
 
     private void findAndMarkStars() {
