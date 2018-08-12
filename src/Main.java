@@ -42,9 +42,9 @@ public class Main {
         CycleFinder cf = Cycles.mcb();
 
         for (IAtomContainer m : db.values()) {
-            if (!m.getProperty("chembl_id").equals("CHEMBL39830")) {
-                continue;
-            }
+//            if (!m.getProperty("chembl_id").equals("CHEMBL39800")) {
+//                continue;
+//            }
 
             String id = m.getProperty("chembl_id");
             System.out.println(id);

@@ -142,6 +142,19 @@ public class GStringGraph {
 
             LinkedList<GStringNode> nextPathNodes = getOtherTempNeighbours(otherNode, node);
 
+            //find out whether nextPathNode is not a branch. If so, remove it from the list of potential continuations
+            if (nextPathNodes.size() == 2) {
+                GStringNode firstNode = nextPathNodes.getFirst();
+                GStringNode secondNode = nextPathNodes.getLast();
+
+                if (firstNode.edges.size() == 1) {
+                    nextPathNodes.remove(firstNode);
+                }
+                else if (secondNode.edges.size() == 1) {
+                    nextPathNodes.remove(secondNode);
+                }
+            }
+
             switch(nextPathNodes.size()) {
                 case 0:
                     //we are done
