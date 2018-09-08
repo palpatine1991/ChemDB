@@ -1,5 +1,8 @@
 package GString;
 
+import javafx.util.Pair;
+import jdk.nashorn.api.tree.Tree;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -26,37 +29,63 @@ public class TreeNode {
         return this.children.get(signature);
     }
 
+    public LinkedList<TreeNode> getChildrenByType(GStringNodeType type) {
+        LinkedList<TreeNode> result = new LinkedList<>();
+
+        for (TreeNode child : children.values()) {
+            if (child.type.equals(type)) {
+                result.push(child);
+            }
+        }
+
+        return result;
+    }
+
     public void updateMatch(String id, GStringNode node) {
         NodeMatchCount oldNodeMatchCounts = this.matches.getOrDefault(id, new NodeMatchCount(0, 0, 0));
 
-        this.matches.put(id, this.matches.getOrDefault(
-                id,
-                new NodeMatchCount(
-                        Math.max(node.specialAtomCount, oldNodeMatchCounts.specialAtomCount),
-                        Math.max(node.specialBondCount, oldNodeMatchCounts.specialBondCount),
-                        Math.max(node.branchCount, oldNodeMatchCounts.branchCount)
-                )
-        ));
-    }
-
-    public TreeNode getNodeByPath(LinkedList<GStringNode> path) {
-        if (path.size() == 0) {
-            return this;
-        }
-
-        String firstNodeSignature = TreeNode.getSignature(path.getFirst());
-
-        if (this.children.containsKey(firstNodeSignature)) {
-            TreeNode matchedChild = this.children.get(firstNodeSignature);
-            path.removeFirst();
-            return matchedChild.getNodeByPath(path);
-        }
-        else {
-            return null;
-        }
+        this.matches.put(
+            id,
+            new NodeMatchCount(
+                    Math.max(node.specialAtomCount, oldNodeMatchCounts.specialAtomCount),
+                    Math.max(node.specialBondCount, oldNodeMatchCounts.specialBondCount),
+                    Math.max(node.branchCount, oldNodeMatchCounts.branchCount)
+            )
+        );
     }
 
     private static String getSignature(GStringNode node) {
-        return node.type.id + "," + node.size;
+        return TreeNode.createSignature(node.type, node.size);
     }
+
+    public static String getSignature(TreeNode node) {
+        return TreeNode.createSignature(node.type, node.size);
+    }
+
+    public static String createSignature(GStringNodeType type, int size) {
+        return type.id + "," + size;
+    }
+
+    public static Pair<GStringNodeType, Integer> parseSignature(String signature) {
+        String[] words = signature.split(",");
+
+        int size = Integer.parseInt(words[1]);
+        GStringNodeType type = null;
+
+        if (words[0].equals(GStringNodeType.CYCLE.id)) {
+            type = GStringNodeType.CYCLE;
+        }
+        else if (words[0].equals(GStringNodeType.PATH.id)) {
+            type = GStringNodeType.PATH;
+        }
+        else if (words[0].equals(GStringNodeType.STAR.id)) {
+            type = GStringNodeType.STAR;
+        }
+        else {
+            assert false : "Invalid entry of node signature";
+        }
+
+        return new Pair<GStringNodeType, Integer>(type, size);
+    }
+
 }

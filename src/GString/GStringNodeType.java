@@ -8,7 +8,7 @@ public enum GStringNodeType {
 
     public String id;
 
-    private GStringNodeType(String id) {
+    GStringNodeType(String id) {
         this.id = id;
     }
 }

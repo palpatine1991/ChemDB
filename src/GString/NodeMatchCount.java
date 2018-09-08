@@ -10,4 +10,9 @@ public class NodeMatchCount {
         this.specialBondCount = specialBondCount;
         this.branchCount = branchCount;
     }
+    public NodeMatchCount() {
+        this.specialAtomCount = 0;
+        this.specialBondCount = 0;
+        this.branchCount = 0;
+    }
 }
