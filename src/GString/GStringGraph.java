@@ -1,5 +1,6 @@
 package GString;
 
+import javafx.util.Pair;
 import org.openscience.cdk.Bond;
 import org.openscience.cdk.exception.Intractable;
 import org.openscience.cdk.graph.CycleFinder;
@@ -27,7 +28,7 @@ public class GStringGraph {
     private HashMap<IAtomContainer, GStringNode> processedRings = new HashMap<>();
     private IAtomContainer molecule;
     private IRingSet completeRingSet;
-    private int starFanoutTreshold = 3;
+    private int starFanoutTreshold = 4;
 
     public GStringGraph(IAtomContainer molecule) {
         this.molecule = molecule;
@@ -85,6 +86,7 @@ public class GStringGraph {
         }
 
         //if there are no special nodes -> only 1 path exists.
+        //TODO: more paths can exist if STAR fanout is bigger than 3
         if (processedNodes.size() == 0) {
             //find ending one
             boolean loneLongCycle = true;
@@ -121,6 +123,7 @@ public class GStringGraph {
 
     private void processAdjacentPaths(GStringNode node) {
         ListIterator<GStringEdge> iterator = node.edges.listIterator();
+        HashSet<GStringNode> nodesToRemove = new HashSet<>();
 
         while (iterator.hasNext()) {
             GStringEdge startingEdge = iterator.next();
@@ -137,11 +140,53 @@ public class GStringGraph {
                 continue;
             }
 
-            otherNode.type = GStringNodeType.PATH;
+            LinkedList<Pair<LinkedList<GStringEdge>, NodeMatchCount>> pathResults = getPaths(node, otherNode, nodesToRemove);
+
+            boolean edgeRemoved = false;
+
+            for (Pair<LinkedList<GStringEdge>, NodeMatchCount> result : pathResults) {
+                GStringEdge lastEdge = result.getKey().getLast();
+                NodeMatchCount count = result.getValue();
+                GStringNode endNode = null;
+                int pathSize = result.getKey().size();
+
+                if (!lastEdge.node1.type.equals(GStringNodeType.TEMP)) {
+                    endNode = lastEdge.node1;
+                }
+                else if (!lastEdge.node2.type.equals(GStringNodeType.TEMP)) {
+                    endNode = lastEdge.node2;
+                }
+                //blind end -> do nothing but we need to increase the size of path
+                else {
+                    pathSize++;
+                }
+
+                GStringNode pathNode = new GStringNode(GStringNodeType.PATH, pathSize, count.specialAtomCount, count.specialBondCount, count.branchCount);
+                nodes.add(pathNode);
+
+                if (!edgeRemoved) {
+                    iterator.remove();
+                    edgeRemoved = true;
+                }
+                GStringEdge newEdge1 = new GStringEdge(startingEdge.isSpecial, pathNode, node);
+                iterator.add(newEdge1);
+                pathNode.edges.add(newEdge1);
+
+                if (endNode != null) {
+                    endNode.edges.remove(lastEdge);
+                    GStringEdge newEdge2 = new GStringEdge(lastEdge.isSpecial, pathNode, endNode);
+                    newEdge2.registerEdgeToNodes();
+                }
+            }
+
+            //region old
+            /*otherNode.type = GStringNodeType.PATH;
             otherNode.size = 1;
 
             LinkedList<GStringNode> nextPathNodes = getOtherTempNeighbours(otherNode, node);
 
+
+            //TODO:might be more than two
             //find out whether nextPathNode is not a branch. If so, remove it from the list of potential continuations
             if (nextPathNodes.size() == 2) {
                 GStringNode firstNode = nextPathNodes.getFirst();
@@ -163,6 +208,7 @@ public class GStringGraph {
                     processPathNode(otherNode, nextPathNodes.getFirst());
                     break;
                 case 2:
+                    //TODO: might be in different cases than 2
                     NewNodeEdgeResult splitResult = splitNode(otherNode, nextPathNodes.getFirst(), node);
                     processPathNode(otherNode, nextPathNodes.getFirst());
 
@@ -181,9 +227,105 @@ public class GStringGraph {
 
                     break;
                 default:
+                    //TODO: might be more than two
                     assert false : "Temp node has 3 temp neighbours!";
+            }*/
+            //endregion
+        }
+
+        nodes.removeAll(nodesToRemove);
+    }
+
+    private LinkedList<Pair<LinkedList<GStringEdge>, NodeMatchCount>> getPaths(GStringNode originNode, GStringNode startingNode, HashSet<GStringNode> nodesToRemove) {
+        LinkedList<Pair<LinkedList<GStringEdge>, NodeMatchCount>> result = new LinkedList<>();
+        LinkedList<GStringEdge> currentPath = new LinkedList<>();
+        HashSet<GStringNode> visitedNodes = new HashSet<>();
+        getPaths(originNode, startingNode, result, currentPath, visitedNodes, new NodeMatchCount(), nodesToRemove);
+        return result;
+    }
+
+    private void getPaths(
+            GStringNode originNode,
+            GStringNode startingNode,
+            LinkedList<Pair<LinkedList<GStringEdge>, NodeMatchCount>> result,
+            LinkedList<GStringEdge> currentPath,
+            HashSet<GStringNode> visitedNodes,
+            NodeMatchCount counts,
+            HashSet<GStringNode> nodesToRemove
+    ) {
+        visitedNodes.add(startingNode);
+        nodesToRemove.add(startingNode);
+
+        NodeMatchCount newCount = new NodeMatchCount(
+                counts.specialAtomCount + startingNode.specialAtomCount,
+                counts.specialBondCount,
+                counts.branchCount
+        );
+
+        //end of path
+        if (startingNode.edges.size() == 1) {
+            result.add(new Pair<>(((LinkedList<GStringEdge>)currentPath.clone()), newCount));
+        }
+
+        HashSet<GStringEdge> branchEdges = new HashSet<>();
+
+        //handle branches
+        if (startingNode.edges.size() > 2) {
+            for (GStringEdge edge : startingNode.edges) {
+                GStringNode otherNode = edge.getOther(startingNode);
+                if (otherNode.equals(originNode)) {
+                    continue;
+                }
+
+                //Branch!
+                if (otherNode.edges.size() == 1) {
+                    //if there was no continuation, mark last branch as the end of path
+                    //-2: 1 for origin edge, 1 for current edge. It means that all previous edges were branches
+                    if (edge.equals(startingNode.edges.getLast()) && branchEdges.size() == startingNode.edges.size() - 2) {
+                        break;
+                    }
+                    branchEdges.add(edge);
+                    newCount.branchCount++;
+                    newCount.specialAtomCount += otherNode.specialAtomCount;
+                    if (edge.isSpecial) {
+                        newCount.specialBondCount++;
+                    }
+                }
             }
         }
+
+
+        for (GStringEdge edge : startingNode.edges) {
+            GStringNode otherNode = edge.getOther(startingNode);
+            if (otherNode.equals(originNode)) {
+                continue;
+            }
+
+            if (branchEdges.contains(edge)) {
+                continue;
+            }
+
+
+            NodeMatchCount edgeNewCount = (NodeMatchCount)newCount.clone();
+            if (edge.isSpecial) {
+                edgeNewCount.specialBondCount++;
+            }
+
+            currentPath.addLast(edge);
+
+            //We met either large cycle or non-temp node -> report it as new path!
+            if (visitedNodes.contains(otherNode) || !otherNode.type.equals(GStringNodeType.TEMP)) {
+                result.add(new Pair<>(((LinkedList<GStringEdge>)currentPath.clone()), edgeNewCount));
+                currentPath.removeLast();
+                continue;
+            }
+
+            //Edge leads to TEMP node -> continue
+            getPaths(startingNode, otherNode, result, currentPath, visitedNodes, edgeNewCount, nodesToRemove);
+            currentPath.removeLast();
+        }
+
+        visitedNodes.remove(startingNode);
     }
 
     //Duplicates the node and each new node will have only 1 TEMP neighbour. Returns new node and edge

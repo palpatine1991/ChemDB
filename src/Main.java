@@ -24,7 +24,8 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) throws CDKException {
-        SDFParser parser = new SDFParser("../chembl_24.sdf");
+        //SDFParser parser = new SDFParser("../chembl_24.sdf");
+        SDFParser parser = new SDFParser("../chembl_test1.sdf");
         HashMap<String, IAtomContainer> db = null;
 
         try {
@@ -123,12 +124,12 @@ public class Main {
         //region GString
         GString gstring = new GString(db, 4);
         gstring.buildIndex();
-        HashMap<String, IAtomContainer> gStringCandidateSet = gstring.getCandidateSet(queryContainer);
+        /*HashMap<String, IAtomContainer> gStringCandidateSet = gstring.getCandidateSet(queryContainer);
         System.out.print("GString candidate set size: ");
         System.out.println(gStringCandidateSet.size());
         for(String id : gStringCandidateSet.keySet()) {
             System.out.println(id);
-        }
+        }*/
         //gstring.test(1);
         //endregion
     }

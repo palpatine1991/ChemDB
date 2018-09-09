@@ -29,14 +29,15 @@ public class SDFParser {
 
         while (reader.hasNext()) {
             IAtomContainer molecule = reader.next();
-            //if (molecule.getProperty(propertyID).equals("CHEMBL501943"))
+            System.out.println((String)molecule.getProperty(propertyID));
+            if (molecule.getProperty(propertyID).equals("CHEMBL503870"))
             result.put(molecule.getProperty(propertyID), molecule);
             count++;
             if (count % 50000 == 0) {
                 System.out.println(count);
             }
-            if (count == 50000) {
-            //    break;
+            if (count == 10) {
+                break;
             }
         }
 
