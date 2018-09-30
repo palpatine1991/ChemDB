@@ -100,6 +100,9 @@ public class GString {
     }
 
     private boolean doesNodeMatch(TreeNode query, TreeNode db, String id) {
+        if (!db.matches.containsKey(id)) {
+            return false;
+        }
 
         if (db.type.equals(GStringNodeType.CYCLE)) {
             if (db.size != query.size) {
@@ -215,6 +218,7 @@ public class GString {
             List<GStringEdge> edges = node.edges;
 
             for (GStringEdge edge : edges) {
+
                 if (!visitedEdges.contains(edge)) {
                     visitedEdges.add(edge);
 

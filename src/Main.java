@@ -73,11 +73,12 @@ public class Main {
         //endregion
 
         IAtomContainer queryContainer = null;
-        //String query = "c1cc(-O-C-C)ccc1";
-        String query = "Oc1ccc(\\C=C(/C#N)\\C(=O)OC\\C=C\\c2ccccc2)cc1O"; //1 exact match
+        //String query = "c1cc(-O-C(Cc1ccccc1)-C)ccc1"; //no match, but GraphGrepSX has a lot a false positives, GString has empty set!
+        //String query = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+        String query = "c1ccccc1c2ccccc2c3ccccc3c4ccccc4c5ccccc5";
+        //String query = "Oc1ccc(\\C=C(/C#N)\\C(=O)OC\\C=C\\c2ccccc2)cc1O"; //1 exact match
+        //String query = "SCCCCC(=O)O";
         //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
-        //String query = "CCCCCCCCCCCCCC(=O)NCc1ccccc1"; //Good example of small set of GString because of large structure
-        //String query = "CCCCCCCCCCCCCC(=O)NCc1ccccc1"; //Good example of small set of GString because of large structure
         SMARTSQueryTool queryTool;
         queryTool = new SMARTSQueryTool(query, DefaultChemObjectBuilder.getInstance());
 
@@ -122,14 +123,14 @@ public class Main {
         //endregion
 
         //region GString
-        GString gstring = new GString(db, 4);
+        GString gstring = new GString(db, 5);
         gstring.buildIndex();
-        /*HashMap<String, IAtomContainer> gStringCandidateSet = gstring.getCandidateSet(queryContainer);
+        HashMap<String, IAtomContainer> gStringCandidateSet = gstring.getCandidateSet(queryContainer);
         System.out.print("GString candidate set size: ");
         System.out.println(gStringCandidateSet.size());
         for(String id : gStringCandidateSet.keySet()) {
             System.out.println(id);
-        }*/
+        }
         //gstring.test(1);
         //endregion
     }
