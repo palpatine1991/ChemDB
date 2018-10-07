@@ -164,7 +164,7 @@ public class SqlHandler {
         statistics.put(bond, bondCount + 1);
     }
 
-    private char getBondCharacter(IBond bond) {
+    public static char getBondCharacter(IBond bond) {
         if (bond.getOrder().equals(IBond.Order.SINGLE)){
             return '-';
         }
