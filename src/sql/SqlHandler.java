@@ -10,6 +10,8 @@ import org.openscience.cdk.interfaces.IBond;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class SqlHandler {
@@ -25,6 +27,8 @@ public class SqlHandler {
     StringBuilder insertQuery = new StringBuilder();
     int insertQueryLimit = 50;
     int insertQuerySize = 0;
+
+    HashMap<String, Integer> statistics = new HashMap<>();
 
     public SqlHandler() {
         info = new Properties();
@@ -50,6 +54,10 @@ public class SqlHandler {
         }
     }
     public void commitInsert() {
+        if (insertQuerySize == 0) {
+            return;
+        }
+
         insertQuery.append(" SELECT * FROM DUAL");
 
         try {
@@ -72,30 +80,42 @@ public class SqlHandler {
         }
 
         for (IBond bond : molecule.bonds()) {
+            char bondCharacter = getBondCharacter(bond);
+            String atom1ID = bond.getAtom(0).getID();
+            String atom2ID = bond.getAtom(1).getID();
+            String atom1Symbol = bond.getAtom(0).getSymbol();
+            String atom2Symbol = bond.getAtom(1).getSymbol();
+
             //Inserting bonds in default order
             insertQuery.append("INTO BONDS VALUES (");
-            insertQuery.append(bond.getAtom(0).getID());
+            insertQuery.append(atom1ID);
             insertQuery.append(",");
-            insertQuery.append(bond.getAtom(1).getID());
+            insertQuery.append(atom2ID);
             insertQuery.append(",'");
-            insertQuery.append(bond.getAtom(0).getSymbol());
-            insertQuery.append(getBondCharacter(bond));
-            insertQuery.append(bond.getAtom(1).getSymbol());
+            insertQuery.append(atom1Symbol);
+            insertQuery.append(bondCharacter);
+            insertQuery.append(atom2Symbol);
             insertQuery.append("','");
             insertQuery.append((String)molecule.getProperty("chembl_id"));
             insertQuery.append("') INTO BONDS VALUES (");
 
+            updateStatistics(atom1Symbol + bondCharacter + atom2Symbol);
+
             //Inserting bonds in reversed order
-            insertQuery.append(bond.getAtom(1).getID());
+            insertQuery.append(atom2ID);
             insertQuery.append(",");
-            insertQuery.append(bond.getAtom(0).getID());
+            insertQuery.append(atom1ID);
             insertQuery.append(",'");
-            insertQuery.append(bond.getAtom(1).getSymbol());
-            insertQuery.append(getBondCharacter(bond));
-            insertQuery.append(bond.getAtom(0).getSymbol());
+            insertQuery.append(atom2Symbol);
+            insertQuery.append(bondCharacter);
+            insertQuery.append(atom1Symbol);
             insertQuery.append("','");
             insertQuery.append((String)molecule.getProperty("chembl_id"));
             insertQuery.append("')");
+
+            if (!atom1Symbol.equals(atom2Symbol)) {
+                updateStatistics(atom2Symbol + bondCharacter + atom1Symbol);
+            }
 
             insertQuerySize += 2;
         }
@@ -105,7 +125,13 @@ public class SqlHandler {
         }
     }
 
-
+    public void writeStatistics() {
+        for (Map.Entry<String, Integer> entry : statistics.entrySet()) {
+            System.out.print(entry.getKey());
+            System.out.print(": ");
+            System.out.println(entry.getValue());
+        }
+    }
 
     public void test() {
         try {
@@ -131,6 +157,11 @@ public class SqlHandler {
         catch (Exception e) {
             System.out.print(e);
         }
+    }
+
+    private void updateStatistics(String bond) {
+        int bondCount = statistics.getOrDefault(bond, 0);
+        statistics.put(bond, bondCount + 1);
     }
 
     private char getBondCharacter(IBond bond) {

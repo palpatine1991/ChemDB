@@ -36,7 +36,7 @@ public class SDFParser {
             if (count % 50000 == 0) {
                 System.out.println(count);
             }
-            if (count == 1000) {
+            if (count == 400) {
                 break;
             }
         }
