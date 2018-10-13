@@ -19,6 +19,7 @@ import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 import sql.SqlHandler;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,52 +67,47 @@ public class Main {
         //endregion
 
         //region SMILES testing
-        //IAtomContainer queryContainer = null;
+        IAtomContainer queryContainer = null;
         //String query = "c1cc(-O-C(Cc1ccccc1)-C)ccc1"; //no match, but GraphGrepSX has a lot a false positives, GString has empty set!
         //String query = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
         //String query = "c1ccccc1c2ccccc2c3ccccc3c4ccccc4c5ccccc5";
+        String query = "n1ccccc1c2ccccc2";
         //String query = "Oc1ccc(\\C=C(/C#N)\\C(=O)OC\\C=C\\c2ccccc2)cc1O"; //1 exact match
         //String query = "SCCCCC(=O)O";
         //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
+        //String query = "CCCC";
 
 
 
-//        SMARTSQueryTool queryTool;
-//        queryTool = new SMARTSQueryTool(query, DefaultChemObjectBuilder.getInstance());
-//
-//        try {
-//            SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-//            queryContainer = sp.parseSmiles(query);
-//        } catch (InvalidSmilesException e) {
-//            System.err.println(e.getMessage());
-//        }
+        SMARTSQueryTool queryTool;
+        queryTool = new SMARTSQueryTool(query, DefaultChemObjectBuilder.getInstance());
+
+        try {
+            SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+            queryContainer = sp.parseSmiles(query);
+        } catch (InvalidSmilesException e) {
+            System.err.println(e.getMessage());
+        }
         //endregion
 
         //region EXACT MATCHING
-//        int matchCount = 0;
-//
-//        for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
-//            if (queryTool.matches(entry.getValue())) {
-//                matchCount++;
-//                System.out.println(entry.getValue().getProperty("chembl_id").toString());
-//            }
-//        }
-//
-//        System.out.print("Exact match count: ");
-//        System.out.println(matchCount);
+        int matchCount = 0;
+
+        for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
+            if (queryTool.matches(entry.getValue())) {
+                matchCount++;
+                System.out.println(entry.getValue().getProperty("chembl_id").toString());
+            }
+        }
+
+        System.out.print("Exact match count: ");
+        System.out.println(matchCount);
         //endregion
 
         //region GraphGrepSX.GraphGrepSX
 //        GraphGrepSX.GraphGrepSX gsx = new GraphGrepSX.GraphGrepSX(db, 6);
 //        gsx.buildIndex();
 //        HashMap<String, IAtomContainer> candidateSet = gsx.getCandidateSet(queryContainer);
-//
-//        for (Map.Entry<String, IAtomContainer> entry : candidateSet.entrySet()) {
-//            System.out.println(entry.getKey());
-//            System.out.println(entry.getValue());
-//            System.out.println("------------------");
-//        }
-
 //        System.out.print("GarphGrepSX candidate set size: ");
 //        System.out.println(candidateSet.size());
 //        for(String id : candidateSet.keySet()) {
@@ -138,14 +134,18 @@ public class Main {
 
         long startTime = System.currentTimeMillis();
 
-        for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
+        /*for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
             sql.createMolecule(entry.getValue());
         }
 
-        sql.commitInsert();
+        sql.commitInsert();*/
 
         long estimatedTime = System.currentTimeMillis() - startTime;
         System.out.println(estimatedTime / 1000);
+
+        ArrayList<String> result = sql.getQueryResults(queryContainer);
+        System.out.println(result);
+        System.out.println(result.size());
 
         //endregion
     }

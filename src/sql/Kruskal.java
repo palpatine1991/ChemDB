@@ -12,8 +12,9 @@ import java.util.List;
 public class Kruskal {
     private DisjointSet disjointSet;
     List<BondPrice> bondList = new ArrayList<>();
-    BondPrice[] orderedBonds;
     IAtomContainer molecule;
+
+    HashMap<IBond, BondPrice> bondToPricaMapping = new HashMap<>();
 
     HashMap<String, Integer> statistics;
 
@@ -31,6 +32,33 @@ public class Kruskal {
         makeSpanningTree();
     }
 
+    public boolean isBondInSpanningTree(IBond bond) {
+        BondPrice bondPrice = bondToPricaMapping.get(bond);
+        return bondPrice.presentInSpanningTree;
+    }
+
+    public IBond getLowestPriceBond() {
+        return bondList.get(0).bond;
+    }
+
+    public ArrayList<IBond> getOrderBondList(Iterable<IBond> bonds) {
+        ArrayList<BondPrice> bondPrices = new ArrayList<>();
+
+        for (IBond bond : bonds) {
+            bondPrices.add(bondToPricaMapping.get(bond));
+        }
+
+        Collections.sort(bondPrices);
+
+        ArrayList<IBond> result = new ArrayList<>();
+
+        for (BondPrice bond : bondPrices) {
+            result.add(bond.bond);
+        }
+
+        return result;
+    }
+
     private void makeAndSortBondList() {
         int bondIndex = 0;
         for (IBond bond : molecule.bonds()) {
@@ -39,11 +67,12 @@ public class Kruskal {
             String atom1Symbol = bond.getAtom(0).getSymbol();
             String atom2Symbol = bond.getAtom(1).getSymbol();
 
-            int price = statistics.get(atom1Symbol + bondCharacter + atom2Symbol);
-            bondList.add(new BondPrice(bond, price));
+            int price = statistics.getOrDefault(atom1Symbol + bondCharacter + atom2Symbol, 0);
+            BondPrice bondPrice = new BondPrice(bond, price);
+            bondList.add(bondPrice);
+            bondToPricaMapping.put(bond, bondPrice);
         }
 
-        orderedBonds = bondList.toArray(new BondPrice[0]);
         Collections.sort(bondList);
     }
 
