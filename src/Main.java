@@ -1,27 +1,12 @@
-import GString.GString;
-import GString.GStringGraph;
-import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.Bond;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.exception.Intractable;
 import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.graph.ConnectedComponents;
-import org.openscience.cdk.graph.CycleFinder;
-import org.openscience.cdk.graph.Cycles;
-import org.openscience.cdk.graph.GraphUtil;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IRingSet;
-import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
-import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.smiles.SmilesParser;
-import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
-import sql.SqlHandler;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
 
@@ -36,51 +21,19 @@ public class Main {
             System.out.println("DB file not found");
         }
 
-        //region Simple cycle test
-//        IAtomContainer molecule = new AtomContainer();
-//        Atom atom1 = new Atom();
-//        atom1.setSymbol("C");
-//        Atom atom2 = new Atom();
-//        atom2.setSymbol("O");
-//        Atom atom3 = new Atom();
-//        atom3.setSymbol("N");
-//        Bond bond1 = new Bond();
-//        bond1.setOrder(IBond.Order.DOUBLE);
-//        bond1.setAtoms(new IAtom[]{atom1, atom2});
-//        Bond bond2 = new Bond();
-//        bond2.setOrder(IBond.Order.TRIPLE);
-//        bond2.setAtoms(new IAtom[]{atom2, atom3});
-//        Bond bond3 = new Bond();
-//        bond3.setOrder(IBond.Order.SINGLE);
-//        bond3.setAtoms(new IAtom[]{atom3, atom1});
-//
-//
-//        molecule.addAtom(atom1);
-//        molecule.addAtom(atom2);
-//        molecule.addAtom(atom3);
-//        molecule.addBond(bond1);
-//        molecule.addBond(bond2);
-//        molecule.addBond(bond3);
-//
-//        db = new HashMap<>();
-//        db.put("xxx", molecule);
-        //endregion
-
         //region SMILES testing
         IAtomContainer queryContainer = null;
         //String query = "c1cc(-O-C(Cc1ccccc1)-C)ccc1"; //no match, but GraphGrepSX has a lot a false positives, GString has empty set!
         //String query = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
         //String query = "c1ccccc1c2ccccc2c3ccccc3c4ccccc4c5ccccc5";
-        String query = "n1ccccc1c2ccccc2";
+        //String query = "n1ccccc1c2ccccc2";
         //String query = "Oc1ccc(\\C=C(/C#N)\\C(=O)OC\\C=C\\c2ccccc2)cc1O"; //1 exact match
         //String query = "SCCCCC(=O)O";
         //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
         //String query = "CCCC";
 
+        String query = QueryUtils.query24_2;
 
-
-        SMARTSQueryTool queryTool;
-        queryTool = new SMARTSQueryTool(query, DefaultChemObjectBuilder.getInstance());
 
         try {
             SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
@@ -90,63 +43,56 @@ public class Main {
         }
         //endregion
 
-        //region EXACT MATCHING
-        int matchCount = 0;
+//        IDBTester tester = new GraphGrepSXDBTester();
+//        IDBTester tester = new GStringDBTester();
+        IDBTester tester = new SqlDBTester();
 
-        for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
-            if (queryTool.matches(entry.getValue())) {
-                matchCount++;
-                System.out.println(entry.getValue().getProperty("chembl_id").toString());
-            }
+        //region index building
+        System.gc();
+        Runtime runtime = Runtime.getRuntime();
+        long usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
+        long startTime = System.nanoTime();
+
+        tester.buildIndex(db);
+
+        long estimatedTime = System.nanoTime() - startTime;
+        System.out.print("Build Index Time: ");
+        System.out.println(estimatedTime / 1000000);
+        System.gc();
+        long usedMemory = runtime.totalMemory() - runtime.freeMemory() - usedMemoryBefore;
+        System.out.print("Build Index Consumed memory: ");
+        System.out.println(usedMemory / 1048576);
+        //endregion
+
+        //region getting candidate set
+        startTime = System.nanoTime();
+
+        HashMap<String, IAtomContainer> candidateSet = tester.getCandidateSet(queryContainer);
+
+        estimatedTime = System.nanoTime() - startTime;
+        System.out.print("Obtaining candidate set Time: ");
+        System.out.println(estimatedTime / 1000000);
+        System.out.print("Candidate set size: ");
+        if (candidateSet != null) {
+            System.out.println(candidateSet.size());
         }
 
-        System.out.print("Exact match count: ");
-        System.out.println(matchCount);
         //endregion
 
-        //region GraphGrepSX.GraphGrepSX
-//        GraphGrepSX.GraphGrepSX gsx = new GraphGrepSX.GraphGrepSX(db, 6);
-//        gsx.buildIndex();
-//        HashMap<String, IAtomContainer> candidateSet = gsx.getCandidateSet(queryContainer);
-//        System.out.print("GarphGrepSX candidate set size: ");
-//        System.out.println(candidateSet.size());
-//        for(String id : candidateSet.keySet()) {
-//            System.out.println(id);
-//        }
-        //gsx.test(9);
+        //region getting final results
+        startTime = System.nanoTime();
+
+        ArrayList<String> results = tester.getResults(queryContainer, candidateSet, query);
+
+        estimatedTime = System.nanoTime() - startTime;
+        System.out.print("Verification Time: ");
+        System.out.println(estimatedTime / 1000000);
+        System.out.print("Result set size: ");
+        System.out.println(results.size());
         //endregion
 
-        //region GString
-//        GString gstring = new GString(db, 5);
-//        gstring.buildIndex();
-//        HashMap<String, IAtomContainer> gStringCandidateSet = gstring.getCandidateSet(queryContainer);
-//        System.out.print("GString candidate set size: ");
-//        System.out.println(gStringCandidateSet.size());
-//        for(String id : gStringCandidateSet.keySet()) {
-//            System.out.println(id);
-//        }
-        //gstring.test(1);
-        //endregion
-
-        //region sql
-
-        SqlHandler sql = new SqlHandler();
-
-        long startTime = System.currentTimeMillis();
-
-        /*for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
-            sql.createMolecule(entry.getValue());
+        for (String s  : results) {
+            System.out.println(s);
         }
-
-        sql.commitInsert();*/
-
-        long estimatedTime = System.currentTimeMillis() - startTime;
-        System.out.println(estimatedTime / 1000);
-
-        ArrayList<String> result = sql.getQueryResults(queryContainer);
-        System.out.println(result);
-        System.out.println(result.size());
-
-        //endregion
     }
 }

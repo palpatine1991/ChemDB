@@ -1,4 +1,6 @@
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.graph.ConnectedComponents;
+import org.openscience.cdk.graph.GraphUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.IteratingSDFReader;
@@ -29,6 +31,25 @@ public class SDFParser {
 
         while (reader.hasNext()) {
             IAtomContainer molecule = reader.next();
+
+            //Checking that graph is connected, otherwise we skip it
+            int[][] adj = GraphUtil.toAdjList(molecule);
+            ConnectedComponents cc = new ConnectedComponents(adj);
+            int[] components = cc.components();
+
+            boolean nonconnected = false;
+
+            for (int v = 0; v < adj.length; v++) {
+                if (components[v] > 1) {
+                    nonconnected = true;
+                    break;
+                }
+            }
+
+            if (nonconnected) {
+                continue;
+            }
+
             //System.out.println((String)molecule.getProperty(propertyID));
             //if (molecule.getProperty(propertyID).equals("CHEMBL9217"))
             result.put(molecule.getProperty(propertyID), molecule);
@@ -36,7 +57,7 @@ public class SDFParser {
             if (count % 50000 == 0) {
                 System.out.println(count);
             }
-            if (count == 400) {
+            if (count == 10000) {
                 break;
             }
         }

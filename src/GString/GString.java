@@ -180,23 +180,6 @@ public class GString {
     }
 
     private void processMolecule(String id, IAtomContainer molecule, HashMap<String, IAtomContainer> db, TreeNode root) {
-        int[][] adj = GraphUtil.toAdjList(molecule);
-        ConnectedComponents cc = new ConnectedComponents(adj);
-        int[] components = cc.components();
-
-        boolean nonconnected = false;
-
-        for (int v = 0; v < adj.length; v++) {
-            if (components[v] > 1) {
-                nonconnected = true;
-                break;
-            }
-        }
-
-        if (nonconnected) {
-            //TODO: handle non-connected structures
-            return;
-        }
         GStringGraph graph = new GStringGraph(molecule);
 
         for (GStringNode node : graph.nodes) {

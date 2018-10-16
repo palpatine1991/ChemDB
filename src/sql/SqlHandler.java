@@ -44,12 +44,20 @@ public class SqlHandler {
             ods.setURL(DB_URL);
             ods.setConnectionProperties(info);
             connection = (OracleConnection) ods.getConnection();
-            Statement statement = connection.createStatement();
-            //statement.executeQuery("delete from bonds");
         } catch(Exception e) {
             System.out.println(e);
         }
     }
+
+    public void clearDB() {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeQuery("delete from bonds");
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
     public void commitInsert() {
         if (insertQuerySize == 0) {
             return;
