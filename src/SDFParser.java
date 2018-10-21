@@ -1,5 +1,10 @@
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.aromaticity.Aromaticity;
+import org.openscience.cdk.aromaticity.ElectronDonation;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.ConnectedComponents;
+import org.openscience.cdk.graph.CycleFinder;
+import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.graph.GraphUtil;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -28,9 +33,17 @@ public class SDFParser {
 
         HashMap<String, IAtomContainer> result = new HashMap<>();
 
+        ElectronDonation model = ElectronDonation.daylight();
+        CycleFinder cycles = Cycles.all(10);
+        Aromaticity aromaticity = new Aromaticity(model, cycles);
 
         while (reader.hasNext()) {
             IAtomContainer molecule = reader.next();
+            try {
+                aromaticity.apply(molecule);
+            } catch(CDKException e) {
+                System.out.println(e);
+            }
 
             //Checking that graph is connected, otherwise we skip it
             int[][] adj = GraphUtil.toAdjList(molecule);
@@ -51,8 +64,8 @@ public class SDFParser {
             }
 
             //System.out.println((String)molecule.getProperty(propertyID));
-            //if (molecule.getProperty(propertyID).equals("CHEMBL9217"))
-            result.put(molecule.getProperty(propertyID), molecule);
+            //if (molecule.getProperty(propertyID).equals("CHEMBL1210111"))
+                result.put(molecule.getProperty(propertyID), molecule);
             count++;
             if (count % 50000 == 0) {
                 System.out.println(count);

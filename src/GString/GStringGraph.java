@@ -582,6 +582,6 @@ public class GStringGraph {
     }
 
     private boolean isDefaultBond(IBond bond) {
-        return bond.getOrder().equals(Bond.Order.SINGLE);
+        return bond.isAromatic() || bond.getOrder().equals(Bond.Order.SINGLE);
     }
 }

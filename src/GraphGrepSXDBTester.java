@@ -10,6 +10,7 @@ public class GraphGrepSXDBTester implements IDBTester {
     public void buildIndex(HashMap<String, IAtomContainer> db) {
         gsx = new GraphGrepSX(db, 6);
         gsx.buildIndex();
+//        gsx.test(10);
     }
 
     public HashMap<String, IAtomContainer> getCandidateSet(IAtomContainer query) {

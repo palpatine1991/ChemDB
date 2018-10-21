@@ -131,7 +131,15 @@ public class GraphGrepSX {
                 if (!visitedBonds.contains(bond)) {
                     visitedBonds.add(bond);
 
-                    TreeNode bondNode = atomNode.getChild(bond.getOrder().name());
+                    TreeNode bondNode;
+
+                    if (bond.isAromatic()) {
+                        bondNode = atomNode.getChild("AROMATIC");
+                    }
+                    else {
+                        bondNode = atomNode.getChild(bond.getOrder().name());
+                    }
+
                     this.doDFS(bond.getOther(atom), id, depth, bondNode, visitedBonds, db);
 
                     visitedBonds.remove(bond);

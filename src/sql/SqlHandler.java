@@ -17,6 +17,7 @@ public class SqlHandler {
     final static String DB_PASSWORD = "admin";
 
     int atomId = 0;
+    int bondId = 0;
 
     Properties info;
     OracleDataSource ods;
@@ -102,6 +103,8 @@ public class SqlHandler {
             insertQuery.append(atom2Symbol);
             insertQuery.append("','");
             insertQuery.append((String)molecule.getProperty("chembl_id"));
+            insertQuery.append("','");
+            insertQuery.append(Integer.toString(bondId));
             insertQuery.append("') INTO BONDS VALUES (");
 
             updateStatistics(atom1Symbol + bondCharacter + atom2Symbol);
@@ -116,6 +119,8 @@ public class SqlHandler {
             insertQuery.append(atom1Symbol);
             insertQuery.append("','");
             insertQuery.append((String)molecule.getProperty("chembl_id"));
+            insertQuery.append("','");
+            insertQuery.append(Integer.toString(bondId++));
             insertQuery.append("')");
 
             if (!atom1Symbol.equals(atom2Symbol)) {
@@ -152,15 +157,25 @@ public class SqlHandler {
 
         sqlQuery.append("SELECT DISTINCT b0.compound_id FROM ");
 
+        int bondCount = 0;
+
         for (IBond bond : query.bonds()) {
             sqlQuery.append("BONDS ");
             sqlQuery.append(getBondTableId(bond));
             sqlQuery.append(", ");
+            bondCount++;
         }
 
         //We need to remove last comma
         sqlQuery.setLength(sqlQuery.length() - 2);
         sqlQuery.append(" WHERE ");
+
+        for (int i = 0; i < bondCount; i++) {
+            for (int j = i + 1; j < bondCount; j++) {
+                sqlQuery.append("b" + i + ".BOND_ID != b" + j + ".BOND_ID");
+                sqlQuery.append(" AND ");
+            }
+        }
 
         IBond minimalBond = kruskal.getLowestPriceBond();
 
@@ -265,6 +280,8 @@ public class SqlHandler {
         //Removing last AND
         sqlQuery.setLength(sqlQuery.length() - 4);
 
+        System.out.println(sqlQuery.toString());
+
         try {
             Statement statement = connection.createStatement();
             ResultSet sqlResult = statement.executeQuery(sqlQuery.toString());
@@ -317,6 +334,9 @@ public class SqlHandler {
     }
 
     public static char getBondCharacter(IBond bond) {
+        if (bond.isAromatic()) {
+            return '~';
+        }
         if (bond.getOrder().equals(IBond.Order.SINGLE)){
             return '-';
         }

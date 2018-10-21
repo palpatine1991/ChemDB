@@ -21,6 +21,15 @@ public class Main {
             System.out.println("DB file not found");
         }
 
+//        try {
+//            SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+//            db = new HashMap<>();
+//            IAtomContainer x = sp.parseSmiles("c1ccccc1");
+//            db.put("xxx", sp.parseSmiles("Oc1ccc2c3ccc4cccc5ccc(cc2c1O)c3c45"));
+//        } catch (InvalidSmilesException e) {
+//            System.err.println(e.getMessage());
+//        }
+
         //region SMILES testing
         IAtomContainer queryContainer = null;
         //String query = "c1cc(-O-C(Cc1ccccc1)-C)ccc1"; //no match, but GraphGrepSX has a lot a false positives, GString has empty set!
@@ -30,9 +39,9 @@ public class Main {
         //String query = "Oc1ccc(\\C=C(/C#N)\\C(=O)OC\\C=C\\c2ccccc2)cc1O"; //1 exact match
         //String query = "SCCCCC(=O)O";
         //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
-        //String query = "CCCC";
+        String query = "c1ccc2c3ccc4cccc5ccc(cc2c1)c3c45";
 
-        String query = QueryUtils.query24_2;
+//        String query = QueryUtils.query24_2;
 
 
         try {
@@ -44,8 +53,8 @@ public class Main {
         //endregion
 
 //        IDBTester tester = new GraphGrepSXDBTester();
-//        IDBTester tester = new GStringDBTester();
-        IDBTester tester = new SqlDBTester();
+        IDBTester tester = new GStringDBTester();
+//        IDBTester tester = new SqlDBTester();
 
         //region index building
         System.gc();
