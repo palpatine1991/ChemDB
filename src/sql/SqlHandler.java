@@ -216,8 +216,6 @@ public class SqlHandler {
             IAtom currentBondAtom1 = currentBond.getAtom(0);
             IAtom currentBondAtom2 = currentBond.getAtom(1);
 
-            StringBuilder preventMirrorBondsSubquery = new StringBuilder();
-
             ArrayList<String> atom1ConnectedAtoms = new ArrayList<>();
             ArrayList<String> atom2ConnectedAtoms = new ArrayList<>();
 
@@ -227,23 +225,16 @@ public class SqlHandler {
                     sqlQuery.append(".ATOM1_ID = ");
                     sqlQuery.append(getBondTableId(bond));
 
-                    preventMirrorBondsSubquery.append(getBondTableId(currentBond));
-                    preventMirrorBondsSubquery.append(".ATOM2_ID != ");
-                    preventMirrorBondsSubquery.append(getBondTableId(bond));
-
                     if (bond.getAtom(0).equals(currentBondAtom1)) {
                         sqlQuery.append(".ATOM1_ID");
                         atom1ConnectedAtoms.add(getBondTableId(bond) + ".ATOM1_ID");
-                        preventMirrorBondsSubquery.append(".ATOM2_ID");
                     }
                     else {
                         sqlQuery.append(".ATOM2_ID");
                         atom1ConnectedAtoms.add(getBondTableId(bond) + ".ATOM2_ID");
-                        preventMirrorBondsSubquery.append(".ATOM1_ID");
                     }
 
                     sqlQuery.append(" AND ");
-                    preventMirrorBondsSubquery.append(" AND ");
                 }
             }
             for (IBond bond : query.getConnectedBondsList(currentBondAtom2)) {
@@ -252,23 +243,16 @@ public class SqlHandler {
                     sqlQuery.append(".ATOM2_ID = ");
                     sqlQuery.append(getBondTableId(bond));
 
-                    preventMirrorBondsSubquery.append(getBondTableId(currentBond));
-                    preventMirrorBondsSubquery.append(".ATOM1_ID != ");
-                    preventMirrorBondsSubquery.append(getBondTableId(bond));
-
                     if (bond.getAtom(0).equals(currentBondAtom2)) {
                         sqlQuery.append(".ATOM1_ID");
                         atom2ConnectedAtoms.add(getBondTableId(bond) + ".ATOM1_ID");
-                        preventMirrorBondsSubquery.append(".ATOM2_ID");
                     }
                     else {
                         sqlQuery.append(".ATOM2_ID");
                         atom2ConnectedAtoms.add(getBondTableId(bond) + ".ATOM2_ID");
-                        preventMirrorBondsSubquery.append(".ATOM1_ID");
                     }
 
                     sqlQuery.append(" AND ");
-                    preventMirrorBondsSubquery.append(" AND ");
                 }
             }
 
@@ -280,12 +264,6 @@ public class SqlHandler {
             sqlQuery.append(getBondCharacter(currentBond));
             sqlQuery.append(currentBondAtom2.getSymbol());
             sqlQuery.append("' AND ");
-
-            //Prevent mirroring bonds
-            //sqlQuery.append(preventMirrorBondsSubquery.toString());
-
-
-
 
             if (atom1ConnectedAtoms.size() == 0) {
                 for (String id : uniqueAtoms) {
