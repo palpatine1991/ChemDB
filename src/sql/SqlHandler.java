@@ -83,6 +83,9 @@ public class SqlHandler {
     public void createMolecule(IAtomContainer molecule) {
         for (IAtom atom : molecule.atoms()) {
             atom.setID(Integer.toString(atomId++));
+            if (atom.isAromatic()) {
+                atom.setSymbol(atom.getSymbol().toLowerCase());
+            }
         }
 
         for (IBond bond : molecule.bonds()) {
@@ -148,6 +151,12 @@ public class SqlHandler {
         LinkedList<IBond> queue = new LinkedList<>();
         StringBuilder sqlQuery = new StringBuilder();
 
+        for (IAtom atom : query.atoms()) {
+            if (atom.isAromatic()) {
+                atom.setSymbol(atom.getSymbol().toLowerCase());
+            }
+        }
+
         //Bonds added to the queue
         HashSet<IBond> foundBonds = new HashSet<>();
         //Bonds added to SQL query
@@ -170,6 +179,9 @@ public class SqlHandler {
         sqlQuery.setLength(sqlQuery.length() - 2);
         sqlQuery.append(" WHERE ");
 
+
+        //We need to add this for making sure that matched edges are distinct
+        //TODO measure how much it slows the queries down
         for (int i = 0; i < bondCount; i++) {
             for (int j = i + 1; j < bondCount; j++) {
                 sqlQuery.append("b" + i + ".BOND_ID != b" + j + ".BOND_ID");
@@ -195,6 +207,10 @@ public class SqlHandler {
         minimalBondNeighbours = kruskal.getOrderBondList(minimalBondNeighbours);
         queue.addAll(minimalBondNeighbours);
 
+        ArrayList<String> uniqueAtoms = new ArrayList<>();
+        uniqueAtoms.add(getBondTableId(minimalBond) + ".ATOM1_ID");
+        uniqueAtoms.add(getBondTableId(minimalBond) + ".ATOM2_ID");
+
         while (!queue.isEmpty()) {
             IBond currentBond = queue.poll();
             IAtom currentBondAtom1 = currentBond.getAtom(0);
@@ -202,7 +218,9 @@ public class SqlHandler {
 
             StringBuilder preventMirrorBondsSubquery = new StringBuilder();
 
-            //TODO update SQL query
+            ArrayList<String> atom1ConnectedAtoms = new ArrayList<>();
+            ArrayList<String> atom2ConnectedAtoms = new ArrayList<>();
+
             for (IBond bond : query.getConnectedBondsList(currentBondAtom1)) {
                 if (processedBonds.contains(bond)) {
                     sqlQuery.append(getBondTableId(currentBond));
@@ -215,10 +233,12 @@ public class SqlHandler {
 
                     if (bond.getAtom(0).equals(currentBondAtom1)) {
                         sqlQuery.append(".ATOM1_ID");
+                        atom1ConnectedAtoms.add(getBondTableId(bond) + ".ATOM1_ID");
                         preventMirrorBondsSubquery.append(".ATOM2_ID");
                     }
                     else {
                         sqlQuery.append(".ATOM2_ID");
+                        atom1ConnectedAtoms.add(getBondTableId(bond) + ".ATOM2_ID");
                         preventMirrorBondsSubquery.append(".ATOM1_ID");
                     }
 
@@ -238,10 +258,12 @@ public class SqlHandler {
 
                     if (bond.getAtom(0).equals(currentBondAtom2)) {
                         sqlQuery.append(".ATOM1_ID");
+                        atom2ConnectedAtoms.add(getBondTableId(bond) + ".ATOM1_ID");
                         preventMirrorBondsSubquery.append(".ATOM2_ID");
                     }
                     else {
                         sqlQuery.append(".ATOM2_ID");
+                        atom2ConnectedAtoms.add(getBondTableId(bond) + ".ATOM2_ID");
                         preventMirrorBondsSubquery.append(".ATOM1_ID");
                     }
 
@@ -249,6 +271,7 @@ public class SqlHandler {
                     preventMirrorBondsSubquery.append(" AND ");
                 }
             }
+
 
             //Add bond type
             sqlQuery.append(getBondTableId(currentBond));
@@ -259,7 +282,51 @@ public class SqlHandler {
             sqlQuery.append("' AND ");
 
             //Prevent mirroring bonds
-            sqlQuery.append(preventMirrorBondsSubquery.toString());
+            //sqlQuery.append(preventMirrorBondsSubquery.toString());
+
+
+
+
+            if (atom1ConnectedAtoms.size() == 0) {
+                for (String id : uniqueAtoms) {
+                    boolean connected = false;
+                    for (String atom1Id : atom1ConnectedAtoms) {
+                        if (id.equals(atom1Id)) {
+                            connected = true;
+                            break;
+                        }
+                    }
+
+                    if (!connected) {
+                        sqlQuery.append(getBondTableId(currentBond) + ".ATOM1_ID");
+                        sqlQuery.append(" != ");
+                        sqlQuery.append(id);
+                        sqlQuery.append(" AND ");
+                    }
+                }
+                uniqueAtoms.add(getBondTableId(currentBond) + ".ATOM1_ID");
+            }
+            if (atom2ConnectedAtoms.size() == 0) {
+                for (String id : uniqueAtoms) {
+                    boolean connected = false;
+
+                    for (String atom2Id : atom2ConnectedAtoms) {
+                        if (id.equals(atom2Id)) {
+                            connected = true;
+                            break;
+                        }
+                    }
+
+                    if (!connected) {
+                        sqlQuery.append(getBondTableId(currentBond) + ".ATOM2_ID");
+                        sqlQuery.append(" != ");
+                        sqlQuery.append(id);
+                        sqlQuery.append(" AND ");
+                    }
+                }
+
+                uniqueAtoms.add(getBondTableId(currentBond) + ".ATOM2_ID");
+            }
 
 
             //Add neigbours to queue

@@ -33,9 +33,7 @@ public class SDFParser {
 
         HashMap<String, IAtomContainer> result = new HashMap<>();
 
-        ElectronDonation model = ElectronDonation.daylight();
-        CycleFinder cycles = Cycles.all(10);
-        Aromaticity aromaticity = new Aromaticity(model, cycles);
+        Aromaticity aromaticity = Constants.getAromaticityModel();
 
         while (reader.hasNext()) {
             IAtomContainer molecule = reader.next();
@@ -64,7 +62,7 @@ public class SDFParser {
             }
 
             //System.out.println((String)molecule.getProperty(propertyID));
-            //if (molecule.getProperty(propertyID).equals("CHEMBL1210111"))
+            //if (molecule.getProperty(propertyID).equals("CHEMBL1179192"))
                 result.put(molecule.getProperty(propertyID), molecule);
             count++;
             if (count % 50000 == 0) {

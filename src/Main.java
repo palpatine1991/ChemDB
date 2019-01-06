@@ -25,7 +25,7 @@ public class Main {
 //            SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
 //            db = new HashMap<>();
 //            IAtomContainer x = sp.parseSmiles("c1ccccc1");
-//            db.put("xxx", sp.parseSmiles("Oc1ccc2c3ccc4cccc5ccc(cc2c1O)c3c45"));
+//            db.put("xxx", sp.parseSmiles("C[CH](C=CC[CH](O)C12CC3CC(CC(C3)C1)C2)[CH]4CC[CH]5C(CCC[C]45C)=CC=C6C[CH](O)C(=C)[CH](O)C6"));
 //        } catch (InvalidSmilesException e) {
 //            System.err.println(e.getMessage());
 //        }
@@ -39,9 +39,9 @@ public class Main {
         //String query = "Oc1ccc(\\C=C(/C#N)\\C(=O)OC\\C=C\\c2ccccc2)cc1O"; //1 exact match
         //String query = "SCCCCC(=O)O";
         //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
-        String query = "c1ccc2c3ccc4cccc5ccc(cc2c1)c3c45";
+        //String query = "CCCC";
 
-//        String query = QueryUtils.query24_2;
+        String query = QueryUtils.query4_2;
 
 
         try {
@@ -53,8 +53,8 @@ public class Main {
         //endregion
 
 //        IDBTester tester = new GraphGrepSXDBTester();
-        IDBTester tester = new GStringDBTester();
-//        IDBTester tester = new SqlDBTester();
+//        IDBTester tester = new GStringDBTester();
+        IDBTester tester = new SqlDBTester();
 
         //region index building
         System.gc();
@@ -84,6 +84,9 @@ public class Main {
         System.out.print("Candidate set size: ");
         if (candidateSet != null) {
             System.out.println(candidateSet.size());
+        }
+        else {
+            System.out.println();
         }
 
         //endregion
