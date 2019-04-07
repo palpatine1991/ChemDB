@@ -1,3 +1,4 @@
+import Utils.GraphSerializer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
@@ -51,6 +52,11 @@ public class Main {
             System.err.println(e.getMessage());
         }
         //endregion
+
+        if (true) {
+            GraphSerializer.serializeDB("testDB", db);
+            return;
+        }
 
 //        IDBTester tester = new GraphGrepSXDBTester();
 //        IDBTester tester = new GStringDBTester();
