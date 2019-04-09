@@ -1,0 +1,55 @@
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+
+Querying is the essential utility of each database. The same applies to chemical databases which growth speed is enormous and therefore there is a pressure on efficiency of the querying process. Since the chemical compounds are typically represented as graphs the most common queries on chemical databases are exact match query, shortest path search, similarity search and substructure search which are usually used in graph databases. The latter will be the main point of interest in this thesis.\\
+
+
+The goal of this thesis is to compare the efficiency of querying methods which have been already proposed in other papers. This includes comparison of algorithms and also the utilization of native query mechanisms of both graph and relational databases.\\
+
+We will focus on the general performance of those approaches as well as on the particular cases where some approach might be better than others.
+
+
+\section*{Subgraph Querying}
+\addcontentsline{toc}{section}{Subgraph Querying}
+
+The goal of subgraph querying is to obtain a list of graphs from the database which contains the queried graph as its subgraph. The result of this process has a wide range of utilization e.g. in chemoinformatics and bioinformatics and therefore in pharmaceutic industry.\\
+
+Due to the NP-complete nature of the subgraph isomorphism problem, we cannot expect good results using a naive approach where we test iteratively all the database records to find out whether they match the query graph or not. Usually, we need to cut down the number of those tests to the minimum.\\
+
+
+Most of the techniques described below are working using the following pattern:
+\begin{enumerate}
+\item Based on the database statistics and approach specific heuristics, construct a database index
+\item Utilizing the index structure, build a candidate set of graphs for particular query
+\item Use some sub-graph isomorphism algorithm to filter out false positives from the candidate set
+\end{enumerate}
+
+
+As we cannot expect significant improvement in the verification step since it is a known NP-complete problem, most of our focus in the rest of this thesis will be targeted on the first two steps, i.e. index construction and its utilization for the candidate set creation.
+
+
+\section*{Definitions}
+\addcontentsline{toc}{section}{Definitions}
+
+\textbf{Definition:} \textit{Graph} $G=(V,E)$ is an ordered of set of vertices $V$ and set of edges $E$ which are unordered pairs of elements from $V$.\\
+
+\noindent \textbf{Definition:} \textit{Labeled Graph} $G=(V,E,L_{V},L_{E},f_{V},f_{E})$ is an ordered of set of vertices $V$, set of edges $E$ which are unordered pairs of elements from $V$, set of vertex labels $L_{V}$,  set of edge labels $L_{E}$, function assigning the vertex labels to vertices $f_{V}: V \longrightarrow L_{V}$ and function assigning the edge labels to edges $f_{E}: E \longrightarrow L_{E}$.\\
+
+\noindent \textbf{Definition:} Graph $G=(V,E)$ is a \textit{Subgraph} of graph $G'=(V',E')$ if and only if $V \subseteq V'$,  $E \subseteq E'$ and $((v1, v2) \in E \Longrightarrow v1, v2 \in V)$. We mark it as $G \subseteq G'$.\\
+
+\noindent \textbf{Definition:} \textit{Induced Subgraph} TODO
+
+\noindent \textbf{Definition:} Graphs $G=(V,E)$ and $G'=(V',E')$ are \textit{Isomorphic} to each other if there exists a bijection $I: V \longrightarrow V'$ so that $(v1,v2) \in E \Leftrightarrow (I(v1),I(v2)) \in E'$.\\
+
+\noindent \textbf{Definition:} Graph $G$ is \textit{Subgraph Isomorphic} to graph $H$ if there exists a subgraph $H' \subseteq H$ which is isomorphic to $G$.\\
+
+\noindent The last four definitions can be extended for the labeled graphs intuitively. 
+
+\section*{Structure of the Thesis}
+\addcontentsline{toc}{section}{Structure of the Thesis}
+
+This thesis is divided into three main parts. In the first part we will analyze the subgraph querying problem. We will define the basic terms, list the algorithms for resolving subgraph isomorphism problem and most importantly we will analyze the related work. \\
+
+In the second part several hypothesis will be uttered. For their verification the author’s experimental work will be used. These experiments will be described and the issues found out during the implementation will be explored.\\
+
+The last part of the thesis will cover the results of experimental work and the comparison with results of related researches. We will comment on the findings and propose some directions in possible following research.

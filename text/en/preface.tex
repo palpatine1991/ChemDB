@@ -1,0 +1,35 @@
+
+
+\chapter{Introduction}
+
+Querying is the essential utility of each database. The same applies to chemical databases which growth speed is enormous and therefore there is a pressure on efficiency of the querying process. Since the chemical compounds are typically represented as graphs the most common queries on chemical databases are exact match query, shortest path search, similarity search and substructure search which are usually used in graph databases. The latter will be the main point of interest in this thesis.\\
+
+
+The goal of this thesis is to compare the efficiency of querying methods which have been already proposed in other papers. This includes comparison of algorithms and also the utilization of native query mechanisms of both graph and relational databases.\\
+
+\textbf{TODO}: add what will be discussed in later chapters
+
+
+\section{Subgraph querying}
+
+The goal of subgraph querying is to obtain a list of graphs from the database which contains the queried graph as its subgraph. The result of this process has a wide range of utilization e.g. in chemoinformatics and bioinformatics and therefore in pharmaceutic industry.\\
+
+
+The standard way of processing a subgraph query has two phases - candidate set creation and verification. The typical approach how to create a set of candidates is a utilization of some precomputed index structure for pruning the database. There are several already proposed solutions how this index may be built which will be discussed in next chapters.\\
+
+Because of the NP-complete nature of the verification process we cannot expect significant improvement of performance in this phase. This is why we put the focus on the database pruning.
+
+
+\section{Technology introduction + definitions (?)}
+
+\textbf{TODO}
+
+\section{Structure of the thesis}
+
+This thesis is divided into three main parts. The first part discuss the results of related researches and applications.\\
+
+In the second part some hypothesis will be uttered. For their verification will be used the author’s experimental work which will be described in detail.\\
+
+The last part of the thesis will cover the results of the experimental work and the comparison with results of related researches.
+
+

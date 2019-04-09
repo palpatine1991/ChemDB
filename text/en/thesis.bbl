@@ -1,0 +1,206 @@
+\begin{thebibliography}{10}
+
+\bibitem{Ullmann}
+J.~R. Ullmann.
+\newblock An algorithm for subgraph isomorphism.
+\newblock {\em J. ACM}, 23(1):31--42, January 1976.
+
+\bibitem{VF2}
+L.~P. Cordella, P.~Foggia, C.~Sansone, and M.~Vento.
+\newblock A (sub)graph isomorphism algorithm for matching large graphs.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  26(10):1367--1372, Oct 2004.
+
+\bibitem{Ehrlich2012}
+Hans-Christian Ehrlich and Matthias Rarey.
+\newblock Systematic benchmark of substructure search in molecular graphs -
+  from ullmann to vf2.
+\newblock {\em Journal of Cheminformatics}, 4(1):13, 2012.
+
+\bibitem{Lee}
+Jinsoo Lee, Wook-Shin Han, Romans Kasperovics, and Jeong-Hoon Lee.
+\newblock An in-depth comparison of subgraph isomorphism algorithms in graph
+  databases.
+\newblock {\em Proc. VLDB Endow.}, 6(2):133--144, December 2012.
+
+\bibitem{QuickSI}
+Haichuan Shang, Ying Zhang, Xuemin Lin, and Jeffrey~Xu Yu.
+\newblock Taming verification hardness: An efficient algorithm for testing
+  subgraph isomorphism.
+\newblock {\em Proc. VLDB Endow.}, 1(1):364--375, August 2008.
+
+\bibitem{GraphQL}
+Huahai He and Ambuj~K. Singh.
+\newblock Graphs-at-a-time: Query language and access methods for graph
+  databases.
+\newblock In {\em Proceedings of the 2008 ACM SIGMOD International Conference
+  on Management of Data}, SIGMOD '08, pages 405--418, New York, NY, USA, 2008.
+  ACM.
+
+\bibitem{GADDI}
+Shijie Zhang, Shirong Li, and Jiong Yang.
+\newblock Gaddi: Distance index based subgraph matching in biological networks.
+\newblock In {\em Proceedings of the 12th International Conference on Extending
+  Database Technology: Advances in Database Technology}, EDBT '09, pages
+  192--203, New York, NY, USA, 2009. ACM.
+
+\bibitem{SPath}
+Peixiang Zhao and Jiawei Han.
+\newblock On graph query optimization in large networks.
+\newblock {\em Proc. VLDB Endow.}, 3(1-2):340--351, September 2010.
+
+\bibitem{GraphGrep}
+E.~S.~S. Dongoran, W.~K.~Rahmat Saleh, and A.~A. Gozali.
+\newblock Analysis and implementation of graph indexing for graph database
+  using graphgrep algorithm.
+\newblock In {\em 2015 3rd International Conference on Information and
+  Communication Technology (ICoICT)}, pages 59--64, May 2015.
+
+\bibitem{GrahGrep:intro}
+Dennis Shasha, Jason T.~L. Wang, and Rosalba Giugno.
+\newblock Algorithmics and applications of tree and graph searching.
+\newblock In {\em Proceedings of the Twenty-first ACM SIGMOD-SIGACT-SIGART
+  Symposium on Principles of Database Systems}, PODS '02, pages 39--52, New
+  York, NY, USA, 2002. ACM.
+
+\bibitem{GIndex}
+Xifeng Yan, Philip~S. Yu, and Jiawei Han.
+\newblock Graph indexing: A frequent structure-based approach.
+\newblock In {\em Proceedings of the 2004 ACM SIGMOD International Conference
+  on Management of Data}, SIGMOD '04, pages 335--346, New York, NY, USA, 2004.
+  ACM.
+
+\bibitem{CTree}
+Huahai He and A.~K. Singh.
+\newblock Closure-tree: An index structure for graph queries.
+\newblock In {\em 22nd International Conference on Data Engineering (ICDE'06)},
+  pages 38--38, April 2006.
+
+\bibitem{GDIndex}
+D.~W. Williams, J.~Huan, and W.~Wang.
+\newblock Graph database indexing using structured graph decomposition.
+\newblock In {\em 2007 IEEE 23rd International Conference on Data Engineering},
+  pages 976--985, April 2007.
+
+\bibitem{GString}
+H.~Jiang, H.~Wang, P.~S. Yu, and S.~Zhou.
+\newblock Gstring: A novel approach for efficient search in graph databases.
+\newblock In {\em 2007 IEEE 23rd International Conference on Data Engineering},
+  pages 566--575, April 2007.
+
+\bibitem{GraphGrepSX}
+Vincenzo Bonnici, Alfredo Ferro, Rosalba Giugno, Alfredo Pulvirenti, and Dennis
+  Shasha.
+\newblock {\em Enhancing Graph Database Indexing by Suffix Tree Structure},
+  pages 195--203.
+\newblock Springer Berlin Heidelberg, Berlin, Heidelberg, 2010.
+
+\bibitem{GIRAS}
+Mehdi Azaouzi and Lotfi Romdhane.
+\newblock A minimal rare substructures-based model for graph database indexing.
+\newblock volume 557, pages 250--259, 02 2017.
+
+\bibitem{frequentGraphs}
+Chuntao Jiang, Frans Coenen, and Michele Zito.
+\newblock A survey of frequent subgraph mining algorithms.
+\newblock {\em The Knowledge Engineering Review}, 28(1):75–105, 2013.
+
+\bibitem{gspan}
+Xifeng Yan and Jiawei Han.
+\newblock gspan: graph-based substructure pattern mining.
+\newblock In {\em 2002 IEEE International Conference on Data Mining, 2002.
+  Proceedings.}, pages 721--724, Dec 2002.
+
+\bibitem{AIDS}
+Daniel Zaharevitz~(NIH/NCI).
+\newblock Aids antiviral screen data.
+\newblock
+  \url{https://wiki.nci.nih.gov/display/NCIDTPdata/AIDS+Antiviral+Screen+Data},
+  2015.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{SQL}
+Adel Golovin and Kim Henrick.
+\newblock Chemical substructure search in sql.
+\newblock {\em Journal of Chemical Information and Modeling}, 49(1):22--27,
+  2009.
+\newblock PMID: 19072559.
+
+\bibitem{Hoksza}
+D.~Hoksza and J.~Jelínek.
+\newblock Using neo4j for mining protein graphs: A case study.
+\newblock In {\em 2015 26th International Workshop on Database and Expert
+  Systems Applications (DEXA)}, pages 230--234, Sept 2015.
+
+\bibitem{Neo4J}
+Neo4j database.
+\newblock \url{https://neo4j.com/}.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{Ambit}
+Ambit.
+\newblock \url{http://ambit.sourceforge.net/}.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{JChem}
+Krisztina Vajda~(ChemAxon).
+\newblock Jchem cartridge for oracle.
+\newblock
+  \url{https://docs.chemaxon.com/display/docs/JChem+Cartridge+for+Oracle},
+  2015.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{cartridge}
+Oracle.
+\newblock Oracle9i data cartridge developer's guide.
+\newblock
+  \url{https://docs.oracle.com/cd/B10501_01/appdev.920/a96595/dci01wht.htm}.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{benchmarkPresentation}
+John May (NextMove~Software).
+\newblock Substructure search face-off: Are the slowest queries the same
+  between tools?
+\newblock
+  \url{https://nextmovesoftware.com/blog/2015/06/01/substructure-search-face-off-are-the-slowest-queries-the-same-between-tools/},
+  2015.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{ABCD}
+Dimitris~K. Agrafiotis, Victor~S. Lobanov, Maxim Shemanarev, Dmitrii~N.
+  Rassokhin, Sergei Izrailev, Edward~P. Jaeger, Simson Alex, and Michael
+  Farnum.
+\newblock Efficient substructure searching of large chemical libraries: The
+  abcd chemical cartridge.
+\newblock {\em Journal of Chemical Information and Modeling},
+  51(12):3113--3130, 2011.
+\newblock PMID: 22035187.
+
+\bibitem{JJ}
+Johnson \& johnson.
+\newblock \url{https://www.jnj.com/}.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{CDK}
+The chemistry development kit.
+\newblock \url{https://github.com/cdk/}.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{SMARTS}
+Daylight Chemical Information~Systems Inc.
+\newblock Smarts - a language for describing molecular patterns.
+\newblock \url{http://www.daylight.com/dayhtml/doc/theory/theory.smarts.html}.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{fingerprints}
+Daylight Chemical Information~Systems Inc.
+\newblock Fingerprints - screening and similarity.
+\newblock \url{http://www.daylight.com/dayhtml/doc/theory/theory.finger.html}.
+\newblock [Online; accessed 19-May-2017].
+
+\bibitem{Chemaxon}
+Chemaxon.
+\newblock \url{https://www.chemaxon.com/}, 2017.
+\newblock [Online; accessed 19-May-2017].
+
+\end{thebibliography}
