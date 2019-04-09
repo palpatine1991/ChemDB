@@ -42,7 +42,7 @@ public class Main {
         //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
         //String query = "CCCC";
 
-        String query = QueryUtils.query4_2;
+        String query = QueryUtils.query4_1;
 
 
         try {
@@ -54,13 +54,26 @@ public class Main {
         //endregion
 
         if (true) {
+            SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+            HashMap<String, IAtomContainer> querydb = new HashMap<>();
+            querydb.put("0", sp.parseSmiles(QueryUtils.query4_1));
+            querydb.put("1", sp.parseSmiles(QueryUtils.query4_2));
+            querydb.put("2", sp.parseSmiles(QueryUtils.query4_3));
+            querydb.put("3", sp.parseSmiles(QueryUtils.query4_4));
+            querydb.put("4", sp.parseSmiles(QueryUtils.query4_5));
+            querydb.put("5", sp.parseSmiles(QueryUtils.query4_6));
+            querydb.put("6", sp.parseSmiles(QueryUtils.query4_7));
+            querydb.put("7", sp.parseSmiles(QueryUtils.query4_8));
+            querydb.put("8", sp.parseSmiles(QueryUtils.query4_9));
+            querydb.put("9", sp.parseSmiles(QueryUtils.query4_10));
             GraphSerializer.serializeDB("testDB", db);
+            GraphSerializer.serializeDB("queryDB", querydb);
             return;
         }
 
-//        IDBTester tester = new GraphGrepSXDBTester();
+        IDBTester tester = new GraphGrepSXDBTester();
 //        IDBTester tester = new GStringDBTester();
-        IDBTester tester = new SqlDBTester();
+//        IDBTester tester = new SqlDBTester();
 
         //region index building
         System.gc();

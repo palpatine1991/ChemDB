@@ -91,27 +91,27 @@ public class GraphSerializer {
         writer.newLine();
     }
 
-    private static char getBondCharacter(IBond bond) throws IOException {
+    private static String getBondCharacter(IBond bond) throws IOException {
         if (bond.isAromatic()) {
-            return '0';
+            return "10";
         }
         if (bond.getOrder().equals(IBond.Order.SINGLE)){
-            return '1';
+            return "1";
         }
         if (bond.getOrder().equals(IBond.Order.DOUBLE)) {
-            return '2';
+            return "2";
         }
         if (bond.getOrder().equals(IBond.Order.TRIPLE)) {
-            return '3';
+            return "3";
         }
         if (bond.getOrder().equals(IBond.Order.QUADRUPLE)) {
-            return '4';
+            return "4";
         }
         if (bond.getOrder().equals(IBond.Order.QUINTUPLE)) {
-            return '5';
+            return "5";
         }
         if (bond.getOrder().equals(IBond.Order.SEXTUPLE)) {
-            return '6';
+            return "6";
         }
 
         throw new IOException("Unknown type of bond");
