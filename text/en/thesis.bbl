@@ -111,6 +111,13 @@ Xifeng Yan and Jiawei Han.
 \newblock In {\em 2002 IEEE International Conference on Data Mining, 2002.
   Proceedings.}, pages 721--724, Dec 2002.
 
+\bibitem{RTrees}
+Antonin Guttman.
+\newblock R-trees: A dynamic index structure for spatial searching.
+\newblock In {\em Proceedings of the 1984 ACM SIGMOD International Conference
+  on Management of Data}, SIGMOD '84, pages 47--57, New York, NY, USA, 1984.
+  ACM.
+
 \bibitem{AIDS}
 Daniel Zaharevitz~(NIH/NCI).
 \newblock Aids antiviral screen data.

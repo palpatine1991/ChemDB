@@ -19,13 +19,13 @@ Since subgraph isomorphism problem is NP-complete, we cannot expect significant 
 
 This section does not provide in-depth comparison of available algorithms since it is not a main topic of this thesis.\\
 
-Almost all papers related to subgraph query methods refer two algorithms - Ullmann\cite{Ullmann} and VF2\cite{VF2}. Those two algorithms are deeply compared in the \cite{Ehrlich2012} benchmark where VF2 outperforms the Ullman.\\
+Almost all papers related to subgraph query methods refer two algorithms - Ullmann\cite{Ullmann} and VF2\cite{VF2}. Those two algorithms are deeply compared in the \cite{Ehrlich2012} benchmark where VF2 outperforms the Ullmann.\\
 
-In \cite{Lee} there is a comparison of four algorithms derived from Ullman algorithm. These are VF2, QuickSI \cite{QuickSI}, GraphQL \cite{GraphQL}, GADDI \cite{GADDI} and SPath \cite{SPath}. They were compared on three real-world data sets. Although all three comparisons have a different winner, it seems that the most efficient algorithm is QuickSI in an average use-case.
+In \cite{Lee} there is a comparison of four algorithms derived from Ullmann algorithm. These are VF2, QuickSI \cite{QuickSI}, GraphQL \cite{GraphQL}, GADDI \cite{GADDI} and SPath \cite{SPath}. They were compared on three real-world data sets. Although all three comparisons have a different winner, it seems that the most efficient algorithm is QuickSI in an average use-case.
 
 \section{Comparison and Summary of Index Building Methods}
 
-In the first part of this section we briefly describe algorithms for building indices on top of chemical compound databases. These are GraphGrep \cite{GraphGrep}\cite{GrahGrep:intro}, GIndex \cite{GIndex}, C-tree \cite{CTree}, GDIndex \cite{GDIndex}, GString \cite{GString}, GraphGrepSX \cite{GraphGrepSX} and GIRAS \cite{GIRAS}.\\
+In the first part of this section we briefly describe algorithms for building indices on top of chemical compound databases. These are \textit{GraphGrep} \cite{GraphGrep}\cite{GrahGrep:intro}, \textit{GIndex} \cite{GIndex}, \textit{GString} \cite{GString}, \textit{GraphGrepSX} \cite{GraphGrepSX}, \textit{GIRAS} \cite{GIRAS}, \textit{C-tree} \cite{CTree} and \textit{GDIndex} \cite{GDIndex}\\
 
 They form just a selection from a much bigger set of applicable methods and they were picked for different reasons:
 
@@ -41,7 +41,7 @@ In the following sections we will briefly introduce the basic ideas behind all t
 
 \subsection{GraphGrep}
 
-Very simple and intuitive indexing technique which can be used in any graph database with labeled graphs is called GraphGrep. The presumption is that every vertex has a defined unique ID.\\
+Very simple and intuitive indexing technique which can be used in any graph database with labeled graphs is called \textit{GraphGrep}. The presumption is that every vertex has a defined unique ID.\\
 
 For each graph in the database there is constructed index represented as a hash table where the key is a hashed value of a \textit{label-path} (a concatenation of the vertex/edge labels on the path) and the value is a number of unique \textit{id-paths} (a concatenation of the vertex IDs on the path) which represent a particular \textit{label-path} in the graph. In the hash table there are all \textit{label-paths} which are present in the graph up to length \textit{l} where \textit{l} is a parameter. This hash table is called a \textit{graph fingerprint}.\\
 
@@ -92,7 +92,7 @@ Because of the mentioned reasons the \textit{frequent subgraphs} and \textit{dis
 
 Utilization of pure set of frequent subgraphs with static $ minSup $ attribute has a couple of issues. With $ minSup $ set too low, we get an enormous set of frequent subgraphs. If the $ minSup $ is too high, the candidate set can be too large (at least $ minSup $) with larger probability of false positives.\\
 
-That is why the described method comes with size-increasing support function. It is a nondecreasing function which takes the graph size as an argument (defined as the number of edges) and returns the $ minSup $ for given size. This results with smaller $ minSup $ for small graphs (because of the efficiency) and bigger $ minSup $ for large graphs (because of the compactness). It is necessary to have specified limit starting from which the function returns infinite to not have too big subgraphs in the index.\\
+That is why the described method comes with size-increasing support function. It is a non-decreasing function which takes the graph size as an argument (defined as the number of edges) and returns the $ minSup $ for given size. This results with smaller $ minSup $ for small graphs (because of the efficiency) and bigger $ minSup $ for large graphs (because of the compactness). It is necessary to have specified limit starting from which the function returns infinite to not have too big subgraphs in the index.\\
 
 
 An additional pruning of the index can be done. There is a very high chance that frequent subgraph $ g $ will not be enough discriminative. It means that  the candidate set of $ g $ is not significantly smaller than the intersection of candidate sets of its subgraphs.\\
@@ -105,7 +105,7 @@ $$ \gamma = \frac{|\bigcap _{i} D_{f_{\varphi i}} |}{| D_{x} |} $$
 
 \textbf{gIndex} is a prefix tree data structure. Its nodes are of 2 types - \textit{discriminative} and \textit{redundant}. Each node’s key is a text string which represents the subgraph. It is serialized and canonized based on special application of DFS algorithm. This technique is called \textit{DFS Coding} and is described in \cite{gspan}.
 
-Discriminative nodes are both frequent (based on given \textit{size-increasing support function}) and discriminative (based on specified $ \gamma $) and they contain a list of IDs of all graphs in the database which contain the particular subgraph. Redundant nodes are present just to satisfy the structure of the gIndex tree.\\
+Discriminative nodes are both frequent (based on given \textit{size-increasing support function}) and discriminative (based on specified $ \gamma $) and they contain a list of IDs of all graphs in the database which contain the particular subgraph. Redundant nodes are present just to satisfy the structure of the \textit{gIndex} tree.\\
 
 The Root of the tree is an empty graph, whose candidate set is the whole database. Level 1 of the tree is the set of vertices (graphs of size 0). Each node in the tree (from level 2) has 1 more edge than its parent (because of the canonization it has its parent’s key as its prefix).\\
 
@@ -115,23 +115,9 @@ From the two previously mentioned statements it is clear what is the search algo
 
 Each of the fragments which were created in the last iteration can be found in the index. We only need to check whether the matched node in the index is discriminative or redundant. If it is redundant, we find the closest discriminative node on the path to root. Having the set of matched discriminative nodes in the tree, we compute an intersection of their sets of matched graphs in the database to get the desired candidate set.
 
-\subsection{C-Tree}
-
-TODO: Check
-
-Contrary to the previous methods, this one does not utilize the fragments of the graph to find the candidate set. It builds the state-of-the-art tree structure where the nodes are \textit{closures} of their children so they contain the same substructures as their whole subtrees. Also it comes with the term of \textit{pseudo sub-isomorphism} which is similar (and weaker) to subgraph isomorphism but it can be verified in polynomial time.\\
-
-The core of the C-tree method are the graph closures. Let $ G $, $ G’ $ be graphs and $ m $ be the mapping between them (graphs can contain dummy nodes for enabling mapping between graphs of different size). Let $ v $, $ v’ $ be nodes from $ G $ or $ G’ $, respectively and let $ m(v) = v’ $. Vertex closure which corresponds to $ v $ an $ v’ $ then contains a union of labels of $ v $ and $ v’ $. A similar approach is applied to edges. \textbf{Graph closure} of graphs $ G $ and $ G’ $ is a tuple $ (VC, EC) $ where $ VC $ is a set of vertex closures and $ EC $ is a set of edge closures. Note that $ G $ and $ G’ $ can be both graphs and graph closures.\\
-
-The idea of the method is to approximate the subgraph isomorphism by a weaker statement, \textbf{pseudo subgraph isomorphism}, which can be tested in polynomial time. An important note is that pseudo subgraph isomorphism can be tested on both graphs and graph closures.\\
-
-The \textbf{C-tree} data structure is a tree where leaf nodes are graphs from the database and every internal node is a graph closure of its children. Each node has at least $ m $ children unless it is root, $ m \geq 2 $, and each node has at most $ M $ children, $ \frac{M+1}{2} \geq m $.\\
-
-The candidate set creation process utilizes the C-tree. It goes from the root to leafs and every time it finds out that query is not pseudo subgraph isomorphic to some node, this node and all its subtree is pruned out. Leafs which are pseudo subgraph isomorphic to the query are added to the candidate set.
-
 \subsection{GString}
 
-All previous methods can be used in any graph database. On the other hand, GString method is very specific for the organic chemical databases (but can be internally modified to support different graph databases with specific content).\\
+All other methods can be used in any graph database. On the other hand, GString method is very specific for the organic chemical databases (but can be internally modified to support different graph databases with specific content).\\
 
 The main ideas come from the knowledge of common structures of the graphs in the database. The chemical compounds consist of 3 types of semantic structures - paths, cycles and stars (a central node with a fanout). Each chemical compound can be converted into a graph whose nodes are not atoms but one of the mentioned structures. This converted graph is significantly smaller than the original one.\\
 
@@ -141,7 +127,7 @@ Based on previous preliminaries, each graph in the database can be shrinked to t
 
 \begin{itemize}
 	\item \textbf{Type} - path, cycle or star
-	\item \textbf{Size} - For path and cycle it is the number of nodes, for star it is the fanout
+	\item \textbf{Size} - For path and cycle it is the number of nodes, for star it is the fan-out
 	
 	\item \textbf{Triple} $ <n_{n}, n_{b}, n_{e}> $ where:
 	\begin{itemize}
@@ -161,6 +147,50 @@ It means that for cycles, the $ n_{n} $ and $ n_{e} $ has to be equivalent in bo
 Note that the answer set of this method can be different from previous methods. Let us take a path of four carbons $ c-c-c-c $ as an example of a query and assume that the benzene (cycle of six carbons) is a part of the database. The previous methods marks the benzene as a \textit{match}. On the other hand the GString will filter it out from the candidate set because it finds out that its \textit{common structure} graph is completely different.\\
 
 However, this is a correct behavior for the chemical compound database since we can expect that if somebody asks for a path of four carbons, he or she does not expect a benzene as a result since cycles and paths have different semantics.
+
+\subsection{GraphGrepSX}
+
+GraphGrepSX is an improved version of GraphGrep. It uses the very same approach for obtaining all the indexed features - it takes all the paths up to the length $l$ from all the graphs in the database. The core of the improvement is in the data structure where the index is stored.\\
+
+Storing all the paths for each graph in a hash table is quite ineffective. Most of the paths appear in more than one graph and we do not need to store these duplicate keys more than once.\\
+
+This method is storing the paths in the suffix tree instead. Each node in the suffix tree represent a path (which is an extension of its parent) and contains a set of pairs $(graph, count)$ where $graph$ is an ID of the database record and $count$ is the number of occurrences of the represented path in the $graph$.\\
+
+The way how the query is processed is very similar to the GraphGrep. It mines all the paths up to length $l$ from the query graph and finds the matching nodes in the index tree. For each matched node we need to check whether the number of occurrences for each graph is equal or higher than the number of occurrences in the query graph. If so, we can add this database record into the candidate set. If some path from the query graph is not in the index, we can return empty candidate set.
+
+\subsection{GIRAS}
+
+As \textit{gIndex} comes with an idea of indexing frequent and discriminative fragments, GIRAS indexes rare and discriminative fragments. The idea is to get higher pruning power and put the indexing focus on the graph features which are specific for particular record in the database. Ultimately, to have a unique index for each graph in the database. This leads to much smaller index size.\\
+
+For getting the rare fragments it utilizes the modified version of \textit{gSpan} algorithm \cite{gspan}. Although, the original \textit{gSpan} is designed to get all subgraphs which support in database is \textit{n or higher}, the modified version finds all the subgraphs which support is equal to \textit{n}.\\
+
+This modified \textit{gSpan} utilizes minimal DFS codes which were already described in \textit{gIndex} section. It starts with an empty DFS code and in each call it finds all the possible right-most extensions from the whole database. For all of them it finds out whether they are minimal DFS codes and if so, it checks what the support of this subgraph is. If it is equal to the input parameter $f$, the the subgraph is added into the result set. If the support is higher, we continue recursively.\\
+
+Note that it returns only the minimal rare substructures with given frequency. This is important since the extensions of these minimal rare substructures with the same frequency would not give us any more pruning power but it would increase the index size significantly.\\
+
+The GIRAS itself then calls the modified gSpan. It starts for the $f=1$. After each call of modified gSpan it checks which database records are represented by the result set of gSpan. If there are database records which are not indexed, yet, the gSpan modified is called iteratively with $f+1$. Once there are all database records indexed, we are finished. The last $f$ is called $f_{min}$ and it is the threshold defining the meaning of rare substructure.\\
+
+Although it is not discussed in the paper\cite{GIRAS} what data structure it is using for the index representation, we found out from the source code obtained from Dr. Azaouzi, author of the described research, that it uses very similar data structure which was described in \textit{gIndex} section, as well as the same technique for the querying process.
+
+\subsection{C-Tree}
+
+Contrary to the previous methods, this one does not utilize the fragments of the graph to find the candidate set. It builds the state-of-the-art tree structure where the nodes are \textit{closures} of their children so they contain the same substructures as their whole subtrees. Also it comes with the term of \textit{pseudo sub-isomorphism} which is similar (and weaker) to subgraph isomorphism but it can be verified in polynomial time.\\
+
+The core of the C-tree method are the graph closures. Let $ G $, $ G’ $ be graphs and $ m $ be the mapping between them (graphs can contain dummy nodes for enabling mapping between graphs of different size). Let $ v $, $ v’ $ be nodes from $ G $ or $ G’ $, respectively and let $ m(v) = v’ $. Vertex closure which corresponds to $ v $ and $ v’ $ then contains a union of labels of $ v $ and $ v’ $. A similar approach is applied to edges. \textbf{Graph closure} of graphs $ G $ and $ G’ $ is a tuple $ (VC, EC) $ where $ VC $ is a set of vertex closures and $ EC $ is a set of edge closures. Note that $ G $ and $ G’ $ can be both graphs and graph closures.\\
+
+The several approaches how to get the mapping $m$ are described in\cite{CTree} and we will not describe those in the this section to not dive too deep into the technical details.\\
+
+The \textbf{C-tree} data structure is a tree where leaf nodes are graphs from the database and every internal node is a graph closure of its children. Each node has at least $ m $ children unless it is root, $ m \geq 2 $, and each node has at most $ M $ children, $ \frac{M+1}{2} \geq m $. All operations on the tree are done in polynomial time and their implementation is analogous to those on R-trees \cite{RTrees}\\
+
+The idea of the method is to approximate the subgraph isomorphism by a weaker statement, \textbf{pseudo subgraph isomorphism}, which can be tested in polynomial time. An important note is that pseudo subgraph isomorphism can be tested on both graphs and graph closures.\\
+
+Full description of the theory behind the pseudo subgraph isomorphism would be too exhaustive for the purposes of this thesis. Very briefly, the idea is to construct a bipartite graph $G$ between vertices of graph $G_{1}=(V_{1}, E_{1})$ and vertices of $G_{2}=(V_{2}, E_{2})$. There is an edge between $v \in V1$ and $u \in V2$ if \textit{breadth-first search tree} around $v$ with the paths up to the specified length $n$ is isomorphic to the one around $u$. If $G$ has a semi-perfect matching, $G_{1}$ is \textit{level-n pseudo subgraph isomorphic} to $G_{2}$\\
+
+The authors of C-tree are also proposing a recursive algorithm which can effectively obtain the information whether two nodes should be connected by an edge in the previously mentioned bipartite graph for the level $n$ based on the bipartite graph for the level $n-1$.\\
+
+The candidate set creation process utilizes the C-tree. It goes from the root to leafs and every time it finds out that query is not pseudo subgraph isomorphic to some node, this node and all its subtree is pruned out. Leafs which are pseudo subgraph isomorphic to the query are added to the candidate set.\\
+
+The main advantage of this method is that in contrary to previous methods, this one does not loose information during the index creation time. It does not count with paths or any other fragments, the closure tree does contain all the information about all the graphs in the database. This helps to increase the level of the pruning during the candidate set creation.
 
 \subsection{GDIndex}
 
@@ -187,31 +217,21 @@ What we have found as a missing piece (and there is no information about this ca
 
 The possible solution to fix this problem would be to index all the subgraphs instead of just induced ones. On the other hand that would have serious impact on the index size.
 
-\subsection{GraphGrepSX}
-
-GraphGrepSX is an improved version of GraphGrep. It uses the very same approach for obtaining all the indexed features - it takes all the paths up to the length $l$ from all the graphs in the database. The core of the improvement is in the data structure where the index is stored.\\
-
-Storing all the paths for each graph in a hash table is quite ineffective. Most of the paths appear in more than one graph and we do not need to store these duplicate keys more than once.\\
-
-This method is storing the paths in the suffix tree instead. Each node in the suffix tree represent a path (which is an extension of its parent) and contains a set of pairs $(graph, count)$ where $graph$ is an ID of the database record and $count$ is the number of occurrences of the represented path in the $graph$.\\
-
-The way how the query is processed is very similar to the GraphGrep. It mines all the paths up to length $l$ from the query graph and finds the matching nodes in the index tree. For each matched node we need to check whether the number of occurrences for each graph is equal or higher than the number of occurrences in the query graph. If so, we can add this database record inti the candidate set. If some path from the query graph is not in the index, we can return empty candidate set.
-
-\subsection{GIRAS}
-
-TODO
-
 \subsection{Benchmark Results}
 
-The first four described algorithms were compared in \cite{GString}. As the testing data set the AIDS Antiviral Screen Dataset \cite{AIDS} was used. It contains 43 000 molecules with an average number of 25 vertices.\\
+\textit{GraphGrep}, \textit{GIndex}, \textit{GString} and \textit{C-Tree} has been compared in \cite{GString}. As the testing data set the AIDS Antiviral Screen Dataset \cite{AIDS} was used. It contains 43 000 molecules with an average number of 25 vertices.\\
 
-All measured metrics except for the speed of index creation had the same winner. The GString algorithm outperforms the others in the size of index, accuracy of the candidate data set and the search time.\\
+All measured metrics except for the speed of index creation had the same winner. The \textit{GString} algorithm outperforms the others in the size of index, accuracy of the candidate data set and the search time.\\
 
-On the other hand, in \cite{GraphGrepSX} we can find the benchmark of the GraphGrepSX method which looks like a simplified version of GString. While in \cite{GString} GString outperforms CTree just by few percents but in \cite{GraphGrepSX}  GraphGrepSX outperforms the CTree by the two levels of magnitude despite larger candidate sets.\\
+On the other hand, in \cite{GraphGrepSX} we can find the benchmark of the \textit{GraphGrepSX} method which looks like a more generic version of \textit{GString}. While in \cite{GString} \textit{GString} outperforms \textit{CTree} just by few percents but in \cite{GraphGrepSX}  \textit{GraphGrepSX} outperforms the \textit{CTree} by the two levels of magnitude despite larger candidate sets.\\
 
-In \cite{GDIndex} there is a comparison of GDIndex and C-tree where GDIndex significantly outperforms C-tree in all measured metrics - the size of index and its construction time and the search time.\\
+In \cite{GDIndex} there is a comparison of \textit{GDIndex} and \textit{C-tree} where \textit{GDIndex} significantly outperforms \textit{C-tree} in all measured metrics - the size of index and its construction time and the search time.\\
 
-What we may question is that how GDIndex would perform over a database with larger graphs such as the AIDS dataset which was used in experimental parts of all other methods.
+What we may question is that how \textit{GDIndex} would perform over a database with larger graphs such as the AIDS dataset which was used in experimental parts of all other methods.\\
+
+In \cite{GIRAS} we can see the benchmark of the \textit{GIRAS}, \textit{C-tree}, \textit{gIndex} and couple of other approaches. We can see that on AIDS dataset \textit{GIRAS} outperforms \textit{gIndex} and \textit{C-tree} in all query sizes. In the dataset with bigger graphs, \textit{GIRAS} outperforms the other two methods only in larger query sizes (12 vertices and more).\\
+
+What is not measured in \cite{GIRAS} is the size of index and time needed for index construction.
 
 \section{Summary of Database Management Systems Utilization for Subgraph Querying}
 
@@ -237,12 +257,14 @@ As an example we can use a subgraph query where we want to find all structures w
 \begin{verbatim}
 SELECT b1.compound_id, b1.atom1_id, b1.atom2_id, b2.atom2_id
 FROM bonds b1, bonds b2
-WHERE b1.bond_type = CsN and
+WHERE b1.bond_type = "C-N" and
       b2.atom1_id = b1.atom1_id and 
-      b2.vond_type = OdC
+      b2.bond_type = "O=C"
 \end{verbatim}
 
-\noindent where $ CsN $ means carbon and nitrogen connected by a single bond and $ OdC $ means oxygen and carbon connected by a double bond.\\
+\noindent where $ C-N $ means carbon and nitrogen connected by a single bond and $ O=C $ means oxygen and carbon connected by a double bond.\\
+
+This example is quite simple. On the other, hand we need to build an SQL query which describes the whole \textit{Constrain Satisfaction Problem}. It means that for each pair of bonds, we have to define whether their atoms do or do not have the same IDs.\\
 
 Where it is possible, we can force usage of built indices. For the first edge we should use the index built on bond type column. For other spanning tree edges we should use the index on $ atom1\_id $ column which literally does the BFS. For edges outside the spanning tree we should use the index built on $ atom1\_id $, $ atom2\_id $ pair since we already know the IDs of both atoms of the edge we need to check.
 
@@ -252,9 +274,9 @@ Hoksza et al. in \cite{Hoksza} describe their case-study of mining the protein g
 
 They found out that the query time is factorial with respect to the number of edges in the query. Beginning from the size 15, the queries were impossible to execute in a reasonable time and therefore they recommend the usage of Neo4j only for small subgraph queries.\\
 
-They also try to compare their results with results for an SQL database. However, the SQL results significantly outperform the Neo4j. But the comparison is not fair enough since the SQL approach used precomputed neighborhood relations and therefore had a significant advantage in comparison with Neo4j.\\
+They have also tried to compare their results with results for an SQL database. However, the SQL results significantly outperform the Neo4j. But the comparison is not fair enough since the SQL approach used pre-computed neighborhood relations and therefore had a significant advantage in comparison with Neo4j.\\
 
-However, based on this paper we can be pessimistic in case of Noe4j utilization, we should keep in mind that the database had a different structure comparing to our to molecule databases which are the target of this thesis. Graphs used in the experiment have an average size of more than 500 edges. On the other hand, typical molecule databases contain significantly smaller graphs and therefore we cannot be sure that the numbers from the mentioned paper can be applied also for such databases.
+However, based on this paper we can be pessimistic in case of Noe4j utilization, we should keep on mind that the database had a different structure comparing to our molecule databases which are the target of this thesis. Graphs used in the experiment have an average size of more than 500 edges. On the other hand, typical molecule databases contain significantly smaller graphs and therefore we cannot be sure that the numbers from the mentioned paper can be applied also for such databases.
 
 \section{Commercially Used Solutions}
 
@@ -262,7 +284,7 @@ In this section we introduce three real-world solutions. The first one is the AM
 
 The second solution, JChem Cartridge \cite{JChem}, is an example of the Oracle cartridge \cite{cartridge}. The reason why we picked this cartridge from the set of existing ones is that it has the best results in the benchmark presentation at \cite{benchmarkPresentation}.\\
 
-The third solution, ABCD Cartridge \cite{ABCD}, is the pure commercial one developed by the Johnson \& Johnson company \cite{JJ}. We picked this one because its architecture is well described in \cite{ABCD} and is publicly accessible despite the software is not.
+The third solution, ABCD Cartridge \cite{ABCD}, is the pure commercial one developed by the Johnson \& Johnson company \cite{JJ}. We picked this one because its architecture is well described in \cite{ABCD} despite the software is not publicly available .
 
 \subsection{AMBIT-SMARTS}
 
@@ -270,7 +292,7 @@ AMBIT-SMARTS is a Java based software built on top of the Chemistry Development 
 
 Each bit in the first bitstring represents whether some structure is a part of the particular record. The structures are of two kinds.\\
 
-The first set of structures is selected automatically based on the database content. It considers each atom’s topological layers. The first topological layer is the atom and all its neighbours. n-th topological layer is the whole (n-1)-th layer and some or all of its neighbours. All such structures up to a selected layer level are recorded. Structures which are a part of ~50\% of database records are considered as a part of the bitstring.\\
+The first set of structures is selected automatically based on the database content. It considers each atom’s topological layers. The first topological layer is the atom and all its neighbours. n-th topological layer is the whole (n-1)-th layer and some or all of its neighbours. All such structures up to a selected layer level are recorded. Structures which are a part of at least ~50\% of database records are considered as those which will be represented in the bitstring.\\
 
 The second set of the structures represented in the first index is selected by the database administrator who should be aware of what types of queries are most likely to be used in such database.\\
 
@@ -278,7 +300,7 @@ The second bitstring represents all paths up to length 7. Because the number of 
 
 \subsection{JChem Cartridge}
 
-The JChem Cartridge is a part of the JChem package from ChemAxon \cite{Chemaxon}. It allows users to build their chemical database on the Oracle database easily. Part of the cartridge form tools for chemical formats conversion, similarity search and sub-structure search. It also implements functions for SMARTS queries.\\
+The JChem Cartridge is a part of the JChem package from ChemAxon \cite{Chemaxon}. It allows users to build their chemical database in the Oracle database easily. Part of the cartridge contains tools for chemical formats conversion, similarity search and sub-structure search. It also implements functions for SMARTS queries.\\
 
 With regards to the substructure search it filters the database based on the fingerprints which are present for every molecule. It uses the hashed fingerprints similar to the AMBIT-SMARTS. The keys for hashing are:
 
@@ -288,7 +310,7 @@ With regards to the substructure search it filters the database based on the fin
 	\item All cycles
 \end{itemize}
 
-The fingerprint itself is generated based on 3 user-defined parameters:
+\noindent The fingerprint itself is generated based on 3 user-defined parameters:
 
 \begin{itemize}
 	\item The length of the fingerprint
