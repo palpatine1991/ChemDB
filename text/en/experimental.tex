@@ -1,2 +1,18 @@
 \chapter{Description of Experimental Work}
+During the research of the related work, many questions arise. The papers are usually very brief and they miss a lot of implementation details. Sadly, even if we tried to contact the authors, we did not get the original source code for the described methods nor for the described benchmarks. The only exception is the \textit{GIRAS} method where we were successful in contacting its author and we do have the complete implementation.\\
 
+All the benchmarks we mentioned in the previous chapter were a part of the papers which describe each particular method. Knowing that we cannot be much surprised that the each presented method outperformed the others. The question is whether we do get the same results on different data sets.\\
+
+The other interesting question is how the winners of the various benchmarks would perform on the same data set. For example, when \textit{GString} outperforms the \textit{C-tree} just by few percents in \cite{GString} and \textit{GraphGrepSX} outperforms \textit{C-tree} by two levels of magnitude, we cannot implicitly say that \textit{GraphGrepSX} would outperform \textit{GString}. There might be three reasons why this presumption might be wrong:
+
+\begin{itemize}
+	\item The lack of knowledge of the tested data set. In most the papers there is an information which dataset has been used. On the other hand, there is usually no information about which part of the dataset has been used since the dataset is usually cut down to only a small part of the original size. Moreover, not all the benchmarks are using the same datasets at all.
+	\item The lack of knowledge about the implementation of the verification step. In non of the mentioned papers is an information about which algorithm has been used for the final subgraph isomorphism testing. This can cause quite a significant difference in the final query measurements (although it cannot influence in the candidate set time computing).
+	\item We do not even know how much time the authors spent on the optimization of the code itself. Whether they cared more about the code readability and maintainability of the code or whether they did try to optimize the code as much as possible. Moreover, we do not know anything about which languages and compilers have been used.
+\end{itemize}
+
+What we did not find at all is some comparison of the performance of the described indexing techniques and utilization of SQL or NOSQL databases. It might be interesting see how significant difference in performance we get when we use very graph specific technique comparing to the very generic ones which the databases offers.\\
+
+In the following sections we will describe what hypotheses do we found interesting to prove or disprove and we describe the process and the implementation of those proves.\\
+
+What is probably fair to mention is that due to the brevity of the related work we cannot be sure whether we did not omit some important part of the algorithms. There has been a lot a situations where we had to improvise since we found out that some very important implementation detail has been omitted in the method descriptions. These cases will be described in following sections as well. Although, we did implement all the methods with opened mind without any endeavor to make some method better or worse, we cannot guarantee that we did not do any mistake or bad implementation decision which can influence the final benchmark results.
