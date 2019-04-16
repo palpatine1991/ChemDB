@@ -1,3 +1,5 @@
+package shared;
+
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.aromaticity.Aromaticity;
 import org.openscience.cdk.aromaticity.ElectronDonation;
@@ -14,8 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class SDFParser {
     String path;
@@ -33,7 +33,7 @@ public class SDFParser {
 
         HashMap<String, IAtomContainer> result = new HashMap<>();
 
-        Aromaticity aromaticity = Constants.getAromaticityModel();
+        Aromaticity aromaticity = shared.Constants.getAromaticityModel();
 
         while (reader.hasNext()) {
             IAtomContainer molecule = reader.next();

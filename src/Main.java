@@ -4,6 +4,8 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.smiles.SmilesParser;
+import shared.QueryUtils;
+import shared.SDFParser;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

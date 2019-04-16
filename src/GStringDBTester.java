@@ -1,5 +1,6 @@
 import GString.GString;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import shared.QueryUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
