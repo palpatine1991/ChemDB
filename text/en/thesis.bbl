@@ -70,18 +70,6 @@ Xifeng Yan, Philip~S. Yu, and Jiawei Han.
   on Management of Data}, SIGMOD '04, pages 335--346, New York, NY, USA, 2004.
   ACM.
 
-\bibitem{CTree}
-Huahai He and A.~K. Singh.
-\newblock Closure-tree: An index structure for graph queries.
-\newblock In {\em 22nd International Conference on Data Engineering (ICDE'06)},
-  pages 38--38, April 2006.
-
-\bibitem{GDIndex}
-D.~W. Williams, J.~Huan, and W.~Wang.
-\newblock Graph database indexing using structured graph decomposition.
-\newblock In {\em 2007 IEEE 23rd International Conference on Data Engineering},
-  pages 976--985, April 2007.
-
 \bibitem{GString}
 H.~Jiang, H.~Wang, P.~S. Yu, and S.~Zhou.
 \newblock Gstring: A novel approach for efficient search in graph databases.
@@ -99,6 +87,18 @@ Vincenzo Bonnici, Alfredo Ferro, Rosalba Giugno, Alfredo Pulvirenti, and Dennis
 Mehdi Azaouzi and Lotfi Romdhane.
 \newblock A minimal rare substructures-based model for graph database indexing.
 \newblock volume 557, pages 250--259, 02 2017.
+
+\bibitem{CTree}
+Huahai He and A.~K. Singh.
+\newblock Closure-tree: An index structure for graph queries.
+\newblock In {\em 22nd International Conference on Data Engineering (ICDE'06)},
+  pages 38--38, April 2006.
+
+\bibitem{GDIndex}
+D.~W. Williams, J.~Huan, and W.~Wang.
+\newblock Graph database indexing using structured graph decomposition.
+\newblock In {\em 2007 IEEE 23rd International Conference on Data Engineering},
+  pages 976--985, April 2007.
 
 \bibitem{frequentGraphs}
 Chuntao Jiang, Frans Coenen, and Michele Zito.
@@ -209,5 +209,11 @@ Daylight Chemical Information~Systems Inc.
 Chemaxon.
 \newblock \url{https://www.chemaxon.com/}, 2017.
 \newblock [Online; accessed 19-May-2017].
+
+\bibitem{java}
+Oracle.
+\newblock Java.
+\newblock \url{https://www.java.com/en/}.
+\newblock [Online; accessed 18-April-2019].
 
 \end{thebibliography}

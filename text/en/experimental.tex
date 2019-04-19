@@ -1,4 +1,5 @@
-\chapter{Description of Experimental Work}
+\chapter{Experimental Work}
+\section{Introduction}
 During the research of the related work, many questions arise. The papers are usually very brief and they miss a lot of implementation details. Sadly, even if we tried to contact the authors, we did not get the original source code for the described methods nor for the described benchmarks. The only exception is the \textit{GIRAS} method where we were successful in contacting its author and we do have the complete implementation.\\
 
 All the benchmarks we mentioned in the previous chapter were a part of the papers which describe each particular method. Knowing that we cannot be much surprised that the each presented method outperformed the others. The question is whether we do get the same results on different data sets.\\
@@ -7,7 +8,9 @@ The other interesting question is how the winners of the various benchmarks woul
 
 \begin{itemize}
 	\item The lack of knowledge of the tested data set. In most the papers there is an information which dataset has been used. On the other hand, there is usually no information about which part of the dataset has been used since the dataset is usually cut down to only a small part of the original size. Moreover, not all the benchmarks are using the same datasets at all.
+	
 	\item The lack of knowledge about the implementation of the verification step. In non of the mentioned papers is an information about which algorithm has been used for the final subgraph isomorphism testing. This can cause quite a significant difference in the final query measurements (although it cannot influence in the candidate set time computing).
+	
 	\item We do not even know how much time the authors spent on the optimization of the code itself. Whether they cared more about the code readability and maintainability of the code or whether they did try to optimize the code as much as possible. Moreover, we do not know anything about which languages and compilers have been used.
 \end{itemize}
 
@@ -16,3 +19,53 @@ What we did not find at all is some comparison of the performance of the describ
 In the following sections we will describe what hypotheses do we found interesting to prove or disprove and we describe the process and the implementation of those proves.\\
 
 What is probably fair to mention is that due to the brevity of the related work we cannot be sure whether we did not omit some important part of the algorithms. There has been a lot a situations where we had to improvise since we found out that some very important implementation detail has been omitted in the method descriptions. These cases will be described in following sections as well. Although, we did implement all the methods with opened mind without any endeavor to make some method better or worse, we cannot guarantee that we did not do any mistake or bad implementation decision which can influence the final benchmark results.
+
+\section{Hypotheses to be verified by the experimental work}
+
+In this section we will list several hypotheses which came to our mind during the related work research.
+
+\subsection{Hypothesis 1: GString vs GraphGrepSX}
+
+\textit{GString} and \textit{GraphGrepSX} are using very similar data structures for indexing the database. The main difference is that \textit{GraphGrepSX} is using all graph paths, \textit{GString} is using all paths in the condensed graph. Also \textit{GString} is using heuristics which are very specific for the our field of research, i.e. the organic chemical databases.\\
+
+That being said, we would expect that the index size of \textit{GString} will be significantly smaller due to the condensed graph usage. Also we would expect that due to the specificity of \textit{GString}, it should outperform \textit{GraphGrepSX} which can be used for any graph dataset.
+
+\subsection{Hypothesis 2: GIRAS performance for large queries}
+
+For small queries (of size 4 and 8) the performance of \textit{GIRAS} is about the same as \textit{C-tree}. On the other hand, for larger queries, the performance is ten times better comparing to \textit{C-tree} and even better results are there for the candidate set sizes. What we may question is how it will perform comparing to \textit{GString} and \textit{GraphGrepSX}. From the benchmarks comparisons we may say that \textit{GraphGrepSX} would be the winner. On the other hand the candidate set size should be much better for \textit{GIRAS}. Our guess is that despite the better candidate set size \textit{GIRAS} will not perform better than \textit{GraphGrepSX}.\\
+
+Also, what might be interesting to measure is the index building time for \textit{GIRAS} since it is not mentioned in the paper and the algorithm seems quite computationally complicated.
+
+\subsection{Hypothesis 3: How the SQL and NoSQL databases perform in comparison with the domain specific solutions}
+
+We may question what performance we may get when we use some SQL or NoSQL database. In this case we do not need to implement any special algorithms for index building, we just use the possibilities of the databases, i.e. create a query which describes the subgraph and in case of SQL databases to build the indices to help the query process.\\
+
+We expect that the domain specific indexes will perform much better. But it might be very interesting to see how significant is the performance gap. Also, we may expect that NoSQL databases will perform better compared to the SQL databases since they are usually optimized for storing and querying graphs.
+
+\section{Description of the Experimental Work}
+
+In this section we will describe the implementation details of the experimental work. Based on the uttered hypotheses we have implemented:
+
+\begin{itemize}
+	\item \textit{GraphGrepSX} and \textit{GString} algorithms
+	
+	\item Adapter for the \textit{GIRAS} implementation obtained from Dr. Azaouzi to be working on the same dataset
+	
+	\item Tools for inserting and querying the SQL and NoSQL database
+\end{itemize}
+
+All the implementation has been written in Java language\cite{java}. Most of the work is using Java version 10, NoSQL database adapter is using Java version 8 due to the technology dependencies.\\
+
+For the chemical database parsing we are using Chemistry Development Kit\cite{CDK} version 2.1.1, a Java library for working with chemical formats and data structures.\\
+
+In case of verification step for the \textit{GraphGrepSX} and \textit{GString} algorithms, we are using the \textit{SMARTSQueryTool} from Chemistry Development Kit. It uses the \textit{Ullmann}\cite{Ullmann} algorithm inside.
+
+\subsection{GraphGrepSX}
+
+Since the \textit{GraphGrepSX} algorithm is very simple, the implementation was quite straight-forward.\\
+
+We had to do only one change in the algorithm to make it applicable to our use-case. The original description of the algorithm expects that the suffix tree represents the vertex label paths. Since we need to represent even the edge labels we have changed the original suffix tree presumption so that the odd levels of the suffix tree represent the vertices and the even levels of the suffix tree represent the edges.\\
+
+The previous statement does not affect the {maximum path length parameter $l$ of \textit{GraphGrepSX} algorithm. It is still valid that this parameter sets the maximum length of the index path with regards to the number of vertices, therefore the index tree will have depth up to $2l - 1$.
+
+\subsection{GString}
