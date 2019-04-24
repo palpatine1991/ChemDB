@@ -1,0 +1,34 @@
+\chapter{Base Terms and Definitions}
+
+\section{Definitions}
+
+\textbf{Definition:} \textit{Graph} $G=(V,E)$ is a ordered pair where $V$ is a set of vertices and $E \subseteq V \times V $ is a set of edges .\\
+
+\noindent \textbf{Definition:} \textit{Labeled Graph} $G=(V,E,L_{V},L_{E},f_{V},f_{E})$ is an ordered 6-tuple of set of vertices $V$, set of edges $E \subseteq V \times V $, set of vertex labels $L_{V}$,  set of edge labels $L_{E}$, function assigning the vertex labels to vertices $f_{V}: V \longrightarrow L_{V}$ and function assigning the edge labels to edges $f_{E}: E \longrightarrow L_{E}$.\\
+
+\noindent \textbf{Definition:} Graph $G=(V,E)$ is a \textit{Subgraph} of graph $G'=(V',E')$ if and only if $V \subseteq V'$,  $E \subseteq E'$ and $((v1, v2) \in E \Longrightarrow v1, v2 \in V)$. We denote it as $G \subseteq G'$.\\
+
+\noindent \textbf{Definition:} Graph $G=(V,E)$ is an \textit{Induced Subgraph} of graph $G'=(V',E')$ if $G \subseteq G'$ and for all edges $e=(u,v) \in E'$, ($u \in V) \& (v \in V) \Longrightarrow e \in E$.\\
+
+\noindent \textbf{Definition:} Graphs $G=(V,E)$ and $G'=(V',E')$ are \textit{Isomorphic} to each other if there exists a bijection $I: V \longrightarrow V'$ so that $(v1,v2) \in E \Leftrightarrow (I(v1),I(v2)) \in E'$.\\
+
+\noindent \textbf{Definition:} Graph $G$ is \textit{Subgraph Isomorphic} to graph $H$ if there exists a subgraph $H' \subseteq H$ which is isomorphic to $G$.\\
+
+\noindent The last four definitions can be extended for the labeled graphs intuitively. 
+
+\section{Subgraph Querying}
+
+The goal of subgraph querying is to obtain a list of graphs from the database which contain the queried graph as its subgraph. The result of this process has a wide range of utilization e.g. in chemoinformatics and bioinformatics and therefore in pharmaceutic industry.\\
+
+Due to the NP-complete nature of the subgraph isomorphism problem (is one graph subgraph isomorphic to other?), we cannot expect good results using a naive approach where we test iteratively all database records to find out whether they match the query graph or not. Usually, we need to cut down the number of these tests to the minimum.\\
+
+
+Most of the techniques, described later in chapter~\ref{analysis}, are working using the following pattern:
+\begin{enumerate}
+	\item Based on the database statistics and approach specific heuristics, construct a database index
+	\item Utilizing the index structure, build a candidate set of graphs for particular query
+	\item Use a sub-graph isomorphism algorithm to filter out false positives from the candidate set
+\end{enumerate}
+
+
+As we cannot expect significant improvement in the verification step since it is a known NP-complete problem, most of our focus in the rest of this thesis will be targeted on the first two steps, i.e. index construction and its utilization for the candidate set creation.
