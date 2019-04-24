@@ -36,11 +36,11 @@ For small queries (of size 4 and 8) the performance of \textit{GIRAS} is about t
 
 Also, what might be interesting to measure is the index building time for \textit{GIRAS} since it is not mentioned in the paper and the algorithm seems quite computationally complicated.
 
-\subsection{Hypothesis 3: How the SQL and NoSQL databases perform in comparison with the domain specific solutions}
+\subsection{Hypothesis 3: How the SQL and graph oriented databases perform in comparison with the domain specific solutions}
 
-We may question what performance we may get when we use some SQL or NoSQL database. In this case we do not need to implement any special algorithms for index building, we just use the possibilities of the databases, i.e. create a query which describes the subgraph and in case of SQL databases to build the indices to help the query process.\\
+We may question what performance we may get when we use some SQL or graph database. In this case we do not need to implement any special algorithms for index building, we just use the possibilities of the databases, i.e. create a query which describes the subgraph and in case of SQL databases to build the indices to help the query process.\\
 
-We expect that the domain specific indexes will perform much better. But it might be very interesting to see how significant is the performance gap. Also, we may expect that NoSQL databases will perform better compared to the SQL databases since they are usually optimized for storing and querying graphs.
+We expect that the domain specific indexes will perform much better. But it might be very interesting to see how significant is the performance gap. Also, we may expect that graph databases will perform better compared to the SQL databases since they are usually optimized for storing and querying graphs.
 
 \section{Description of the Experimental Work}
 
@@ -51,10 +51,10 @@ In this section we will describe the implementation details of the experimental 
 	
 	\item Adapter for the \textit{GIRAS} implementation obtained from Dr. Azaouzi to be working on the same dataset
 	
-	\item Tools for inserting and querying the SQL and NoSQL database
+	\item Tools for inserting and querying the SQL and graph database
 \end{itemize}
 
-All the implementation has been written in Java language\cite{java}. Most of the work is using Java version 10, NoSQL database adapter is using Java version 8 due to the technology dependencies.\\
+All the implementation has been written in Java language\cite{java}. Most of the work is using Java version 10, graph database adapter is using Java version 8 due to the technology dependencies.\\
 
 For the chemical database parsing we are using Chemistry Development \break Kit\cite{CDK} version 2.1.1, a Java library for working with chemical formats and data structures.\\
 
@@ -127,7 +127,47 @@ Then, in the spanning tree we find the edge with lowest value and from this edge
 
 Since we are interested only in the information whether the subgraph is present in particular compound, we start our \textbf{SELECT} statement with \textbf{SELECT DISTINCT b0.COMPOUND\_ID FROM ...} which returns the set of compounds matching the subgraph query which is exactly the result we need.
 
-\subsection{NoSQL Database}
+\subsection{Graph Database}
+
+As observations of paper \cite{Hoksza} state that the Neo4j is not performing well in subgraph querying, we have tried to look for alternative graph databases which can perform better. We found out graph analytic tool \textit{PGX} \cite{pgx}.\\
+
+It is not a graph database in its core meaning. It is a toolkit for graph analysis with an ability to load and store graphs from / to various data formats. It does support a SQL-like query language called \textit{PGQL} \cite{pgql} and it advertise a scalable solution with a focus to high performance.\\
+
+Since it is a analytic tool and not a real database, it does not support ACID transaction model as other databases do but for the purposes of this thesis it does not take serious role.\\
+
+Oracle did a benchmark which compares the performance of subgraph matching in PGX and Neo4j. The results are available at presentation \cite{pgx-neo4j} on slide 31. Note that the benchmark is comparing the results on so-called \textit{hot data}. In other words, it makes sure that the graphs which are being queried are already loaded in memory to prevent result inconsistencies due to the data fetching from the disk.\\
+
+The results of this benchmark are quite convincing. Although there are huge differences of result times according to the query size, PGX outperforms Neo4J in all categories.\\
+
+The first issue we had to solve was that although Oracle is offering windows batch files for starting PGX, we were not successful to successfully run the database. To make the results of the performance measuring as precise as possible, we did not want to use other hardware or different operating system for executing the performance testing of PGX than the hardware and system used for other performance testing of other methods.\\
+
+As a viable compromise we have decided to use the Windows 10 Subsystem for Linux utility \cite{wsl} and we have downloaded the Ubuntu system to be used in this manner. On Ubuntu there were no issues with the PGX database usage.\\
+
+The client side has been implemented in Windows environment using PGX Java client library. The implementation is quite straight-forward. Instead of creating the graph in PGX for every single molecule in the database, we create one huge graph where each graph component represents one molecule. This helps the performance since we do not have to load and store the a huge number of small files, we are executing query on just one graph instead.\\
+
+For each vertex we generate a unique ID, use label to mark the representing atom symbol and we store a molecule ID as a vertex's property. For each edge we use label to mark the type of represented bond.\\
+
+For the querying we are using the PGQL language which is supported by PGX. For each atom in query graph we generate an unique ID and then for each bond in query graph we insert a rule into the query where we define that the two atoms with particular IDs and of particular type are connected by a bond of a particular type. As the last thing in the query we need to state for each pair of atom IDs that they represent different vertex.\\
+
+As an demonstration of simplicity of PGQL usage in our case might be a query representing the path of three carbons. We start a query with the following statement which tells us that we want to select all the molecule IDs (which are being stored for each vertex) except the duplicates. Note that the $a1$ is an ID of the first atom in query graph.
+
+\begin{center}
+	\textbf{SELECT DISTINCT a1.moleculeId}
+\end{center}
+
+The following part of PGQL query describes the bonds in the query graph. The colon sign means that we are describing the label of the vertex or edge. We can see that in this case we are looking for two pairs of carbons connected by a single bond (represented by \textbf{S} character), where the \textbf{a2} atom is shared in these two bonds.
+
+\begin{center}
+	\textbf{MATCH (a1:C)-[:S]-(a2:C), (a2:C)-[:S]-(a3:C)}
+\end{center}
+
+As the last part we need to state that all atoms \textbf{a1}, \textbf{a2} and \textbf{a3} are different. Otherwise the query would match for every pair of connected carbons since \textbf{a1} and \textbf{a3} could represent the same atom
+
+\begin{center}
+	\textbf{WHERE a1 $<>$ a2 AND a1 $<>$ a3 AND a2 $<>$ a3}
+\end{center}
+
+We must admit that the work with PGQL is quite intuitive and comparing to building the SQL query it is way more user friendly. On the other hand, this is quite an expected result since PGQL is designed to query graphs and SQL is designed to query generic data.
 
 \subsection{GIRAS}
 

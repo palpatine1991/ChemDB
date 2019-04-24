@@ -26,17 +26,17 @@
 \contentsline {section}{\numberline {3.2}Hypotheses to be verified by the experimental work}{21}{section.3.2}% 
 \contentsline {subsection}{\numberline {3.2.1}Hypothesis 1: GString vs GraphGrepSX}{21}{subsection.3.2.1}% 
 \contentsline {subsection}{\numberline {3.2.2}Hypothesis 2: GIRAS performance for large queries}{21}{subsection.3.2.2}% 
-\contentsline {subsection}{\numberline {3.2.3}Hypothesis 3: How the SQL and NoSQL databases perform in comparison with the domain specific solutions}{22}{subsection.3.2.3}% 
+\contentsline {subsection}{\numberline {3.2.3}Hypothesis 3: How the SQL and graph oriented databases perform in comparison with the domain specific solutions}{22}{subsection.3.2.3}% 
 \contentsline {section}{\numberline {3.3}Description of the Experimental Work}{22}{section.3.3}% 
 \contentsline {subsection}{\numberline {3.3.1}GraphGrepSX}{22}{subsection.3.3.1}% 
 \contentsline {subsection}{\numberline {3.3.2}GString}{23}{subsection.3.3.2}% 
 \contentsline {subsection}{\numberline {3.3.3}SQL Database}{25}{subsection.3.3.3}% 
-\contentsline {subsection}{\numberline {3.3.4}NoSQL Database}{26}{subsection.3.3.4}% 
-\contentsline {subsection}{\numberline {3.3.5}GIRAS}{26}{subsection.3.3.5}% 
-\contentsline {chapter}{\numberline {4}Experimental Results}{27}{chapter.4}% 
-\contentsline {chapter}{Conclusion}{28}{chapter*.4}% 
-\contentsline {chapter}{Bibliography}{29}{chapter*.5}% 
-\contentsline {chapter}{List of Figures}{32}{chapter*.6}% 
-\contentsline {chapter}{List of Tables}{33}{chapter*.7}% 
-\contentsline {chapter}{List of Abbreviations}{34}{chapter*.8}% 
-\contentsline {chapter}{Attachments}{35}{chapter*.9}% 
+\contentsline {subsection}{\numberline {3.3.4}Graph Database}{26}{subsection.3.3.4}% 
+\contentsline {subsection}{\numberline {3.3.5}GIRAS}{27}{subsection.3.3.5}% 
+\contentsline {chapter}{\numberline {4}Experimental Results}{29}{chapter.4}% 
+\contentsline {chapter}{Conclusion}{30}{chapter*.4}% 
+\contentsline {chapter}{Bibliography}{31}{chapter*.5}% 
+\contentsline {chapter}{List of Figures}{34}{chapter*.6}% 
+\contentsline {chapter}{List of Tables}{35}{chapter*.7}% 
+\contentsline {chapter}{List of Abbreviations}{36}{chapter*.8}% 
+\contentsline {chapter}{Attachments}{37}{chapter*.9}% 

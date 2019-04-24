@@ -220,4 +220,30 @@ Oracle.
 Ulrich Bauer.
 \newblock Minimum cycle basis algorithms for the chemistry development toolkit.
 
+\bibitem{pgx}
+Oracle.
+\newblock Pgx.
+\newblock
+  \url{https://www.oracle.com/technetwork/oracle-labs/parallel-graph-analytix/overview/index.html}.
+\newblock [Online; accessed 25-April-2019].
+
+\bibitem{pgql}
+Oracle.
+\newblock Pgql.
+\newblock \url{http://pgql-lang.org/}.
+\newblock [Online; accessed 25-April-2019].
+
+\bibitem{pgx-neo4j}
+Oracle.
+\newblock An introduction to graph: Database, analytics, and cloud services.
+\newblock
+  \url{https://www.slideshare.net/JeanIhm/an-introduction-to-graph-database-analytics-and-cloud-services?fbclid=IwAR2liLiNYui4EbEJWPEmrPxji_u7jzRproo1u86G10qbabekgvLOruPPskw}.
+\newblock [Online; accessed 25-April-2019].
+
+\bibitem{wsl}
+Microsoft.
+\newblock Windows subsystem for linux documentation.
+\newblock \url{https://docs.microsoft.com/en-us/windows/wsl/about}.
+\newblock [Online; accessed 25-April-2019].
+
 \end{thebibliography}
