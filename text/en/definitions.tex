@@ -18,16 +18,14 @@
 
 \section{Subgraph Querying}
 
-The goal of subgraph querying is to obtain a list of graphs from the database which contain the queried graph as its subgraph. The result of this process has a wide range of utilization e.g. in chemoinformatics and bioinformatics and therefore in pharmaceutic industry.\\
-
 Due to the NP-complete nature of the subgraph isomorphism problem (is one graph subgraph isomorphic to other?), we cannot expect good results using a naive approach where we test iteratively all database records to find out whether they match the query graph or not. Usually, we need to cut down the number of these tests to the minimum.\\
 
 
 Most of the techniques, described later in chapter~\ref{analysis}, are working using the following pattern:
 \begin{enumerate}
 	\item Based on the database statistics and approach specific heuristics, construct a database index
-	\item Utilizing the index structure, build a candidate set of graphs for particular query
-	\item Use a sub-graph isomorphism algorithm to filter out false positives from the candidate set
+	\item Utilizing the index structure, build a \textbf{candidate set} of graphs for particular query
+	\item Use a sub-graph isomorphism algorithm to filter out false positives from the candidate set to obtain \textbf{answer set}
 \end{enumerate}
 
 

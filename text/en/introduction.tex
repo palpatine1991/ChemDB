@@ -1,18 +1,26 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Querying is the essential utility of each database. The same applies to chemical databases whose size is growing rapidly and therefore there is a pressure on efficiency of the querying process. Since the chemical compounds are typically represented as graphs, the most common queries over chemical databases are exact match query, shortest path search, similarity search and substructure search which are usually used in graph databases. The latter will be the main point of interest in this thesis.\\
+Querying is the essential utility of each database and the same applies to chemical databases. Nowadays, the largest publicly accessible databases contain around 100 million compounds. The chemical compounds can be naturally represented as graphs where atoms are represented as vertices and bonds are represented as edges. The typical chemical compound is a connected sparse graph with labeled edges and vertices where the size of the labeling alphabet for edges is less than 10 and size of the labeling alphabet for vertices is in order of low hundreds.\\
 
-The goal of this thesis is to compare the efficiency of querying methods which have been already proposed in other papers. This includes comparison of algorithms and also the utilization of native query mechanisms of both graph and relational databases.\\
+The size of chemical compounds is variable. The vertex count varies typically from very small compounds with less then 10 vertices to huge compounds with hundreds of vertices. These sizes multiplied by the size of the database implies that the querying over such databases might be challenging task.\\
 
-We will focus on the general performance of these approaches as well as on the particular cases where some approach might be better than others.
+The most common queries over chemical databases are exact match query, shortest path search, similarity search and substructure search which are usually used in graph databases. The latter will be the main point of interest in this thesis.\\
+
+The goal of subgraph querying is to obtain a list of graphs from the database which contain the queried graph as its subgraph. The result of this process has a wide range of utilization e.g. in chemoinformatics and bioinformatics and therefore in pharmaceutic industry. Since it is known as NP-complete problem several indexing techniques has been proposed to minimize the count of subgraph isomorphism tests.\\
+
+There are several benchmarks of the mentioned indexing techniques already. The problem is that all found benchmarks has been created by the authors of some of the indexing technique and therefore the intention of the benchmark is to show that the particular index is more powerful than others. There is a lack of independent benchmarks which would compare the best performing indexes on the same data and on the same hardware.\\  
+
+In this thesis we compare the best performing indexing techniques using the same environment. We also compare these techniques with the classical SQL database performance as well as with the performance of the modern graph databases.
 
 
 \section*{Structure of the Thesis}
 \addcontentsline{toc}{section}{Structure of the Thesis}
 
-This thesis is divided into three main parts. In the first part we will analyze the subgraph querying problem. We will define the basic terms, list the algorithms for resolving subgraph isomorphism problem and most importantly we will analyze the related work. \\
+This thesis is divided into four main parts. In the first part called \textit{Base Terms and Definitions} we define the main problem of this thesis, subgraph isomorphism, and we define the main terms related to the graph theory which are used later in the thesis.
 
-In the second part several hypotheses will be uttered. For their verification the author’s experimental work will be used. These experiments will be described and the issues found out during the implementation will be explored.\\
+In the second part called \textit{Analysis of Related Work} we analyze the found literature about the algorithms for resolving subgraph isomorphism problem and most importantly we analyze and briefly describe the indexing techniques proposed in related work.\\
 
-The last part of the thesis will cover the results of experimental work and the comparison with results of related researches. We will comment on the findings and propose some directions in possible following research.
+In the third part, \textit{Experimental Work}, several hypotheses are formulated. For their verification the author’s experimental work is used. These experiments are described in detail and the issues found out during the implementation are explored.\\
+
+The last part of the thesis called \textit{Experimental Results} covers the results of experimental work and the comparison with results of related researches. We will comment on the findings and propose some directions in possible following research.

@@ -1,42 +1,42 @@
 \contentsline {chapter}{Introduction}{3}{chapter*.2}% 
 \contentsline {section}{Structure of the Thesis}{3}{section*.3}% 
-\contentsline {chapter}{\numberline {1}Base Terms and Definitions}{4}{chapter.1}% 
-\contentsline {section}{\numberline {1.1}Definitions}{4}{section.1.1}% 
-\contentsline {section}{\numberline {1.2}Subgraph Querying}{4}{section.1.2}% 
-\contentsline {chapter}{\numberline {2}Analysis of Related Work}{6}{chapter.2}% 
-\contentsline {section}{\numberline {2.1}Subgraph Isomorphism Algorithms}{6}{section.2.1}% 
-\contentsline {section}{\numberline {2.2}Index Building Methods}{6}{section.2.2}% 
-\contentsline {subsection}{\numberline {2.2.1}GraphGrep}{7}{subsection.2.2.1}% 
-\contentsline {subsection}{\numberline {2.2.2}GraphGrepSX}{7}{subsection.2.2.2}% 
-\contentsline {subsection}{\numberline {2.2.3}GIndex}{8}{subsection.2.2.3}% 
-\contentsline {subsection}{\numberline {2.2.4}GIRAS}{10}{subsection.2.2.4}% 
-\contentsline {subsection}{\numberline {2.2.5}GString}{11}{subsection.2.2.5}% 
-\contentsline {subsection}{\numberline {2.2.6}C-Tree}{12}{subsection.2.2.6}% 
-\contentsline {subsection}{\numberline {2.2.7}GDIndex}{13}{subsection.2.2.7}% 
-\contentsline {subsection}{\numberline {2.2.8}Benchmark Results}{14}{subsection.2.2.8}% 
-\contentsline {section}{\numberline {2.3}Database Management Systems Utilization for Subgraph Querying}{15}{section.2.3}% 
-\contentsline {subsection}{\numberline {2.3.1}SQL Substructure Search}{15}{subsection.2.3.1}% 
-\contentsline {subsection}{\numberline {2.3.2}Neo4j Substructure Search}{16}{subsection.2.3.2}% 
-\contentsline {section}{\numberline {2.4}Commercially Used Solutions}{17}{section.2.4}% 
-\contentsline {subsection}{\numberline {2.4.1}AMBIT-SMARTS}{17}{subsection.2.4.1}% 
-\contentsline {subsection}{\numberline {2.4.2}JChem Cartridge}{18}{subsection.2.4.2}% 
-\contentsline {subsection}{\numberline {2.4.3}ABCD Cartridge}{19}{subsection.2.4.3}% 
-\contentsline {chapter}{\numberline {3}Experimental Work}{20}{chapter.3}% 
-\contentsline {section}{\numberline {3.1}Introduction}{20}{section.3.1}% 
-\contentsline {section}{\numberline {3.2}Hypotheses to be verified by the experimental work}{21}{section.3.2}% 
-\contentsline {subsection}{\numberline {3.2.1}Hypothesis 1: GString vs GraphGrepSX}{21}{subsection.3.2.1}% 
-\contentsline {subsection}{\numberline {3.2.2}Hypothesis 2: GIRAS performance for large queries}{21}{subsection.3.2.2}% 
-\contentsline {subsection}{\numberline {3.2.3}Hypothesis 3: How the SQL and graph oriented databases perform in comparison with the domain specific solutions}{22}{subsection.3.2.3}% 
-\contentsline {section}{\numberline {3.3}Description of the Experimental Work}{22}{section.3.3}% 
-\contentsline {subsection}{\numberline {3.3.1}GraphGrepSX}{22}{subsection.3.3.1}% 
-\contentsline {subsection}{\numberline {3.3.2}GString}{23}{subsection.3.3.2}% 
-\contentsline {subsection}{\numberline {3.3.3}SQL Database}{25}{subsection.3.3.3}% 
-\contentsline {subsection}{\numberline {3.3.4}Graph Database}{26}{subsection.3.3.4}% 
-\contentsline {subsection}{\numberline {3.3.5}GIRAS}{27}{subsection.3.3.5}% 
-\contentsline {chapter}{\numberline {4}Experimental Results}{29}{chapter.4}% 
-\contentsline {chapter}{Conclusion}{30}{chapter*.4}% 
-\contentsline {chapter}{Bibliography}{31}{chapter*.5}% 
-\contentsline {chapter}{List of Figures}{34}{chapter*.6}% 
-\contentsline {chapter}{List of Tables}{35}{chapter*.7}% 
-\contentsline {chapter}{List of Abbreviations}{36}{chapter*.8}% 
-\contentsline {chapter}{Attachments}{37}{chapter*.9}% 
+\contentsline {chapter}{\numberline {1}Base Terms and Definitions}{5}{chapter.1}% 
+\contentsline {section}{\numberline {1.1}Definitions}{5}{section.1.1}% 
+\contentsline {section}{\numberline {1.2}Subgraph Querying}{5}{section.1.2}% 
+\contentsline {chapter}{\numberline {2}Analysis of Related Work}{7}{chapter.2}% 
+\contentsline {section}{\numberline {2.1}Subgraph Isomorphism Algorithms}{7}{section.2.1}% 
+\contentsline {section}{\numberline {2.2}Index Building Methods}{7}{section.2.2}% 
+\contentsline {subsection}{\numberline {2.2.1}GraphGrep}{8}{subsection.2.2.1}% 
+\contentsline {subsection}{\numberline {2.2.2}GraphGrepSX}{8}{subsection.2.2.2}% 
+\contentsline {subsection}{\numberline {2.2.3}GIndex}{9}{subsection.2.2.3}% 
+\contentsline {subsection}{\numberline {2.2.4}GIRAS}{11}{subsection.2.2.4}% 
+\contentsline {subsection}{\numberline {2.2.5}GString}{12}{subsection.2.2.5}% 
+\contentsline {subsection}{\numberline {2.2.6}C-Tree}{13}{subsection.2.2.6}% 
+\contentsline {subsection}{\numberline {2.2.7}GDIndex}{14}{subsection.2.2.7}% 
+\contentsline {subsection}{\numberline {2.2.8}Benchmark Results}{15}{subsection.2.2.8}% 
+\contentsline {section}{\numberline {2.3}Database Management Systems Utilization for Subgraph Querying}{16}{section.2.3}% 
+\contentsline {subsection}{\numberline {2.3.1}SQL Substructure Search}{16}{subsection.2.3.1}% 
+\contentsline {subsection}{\numberline {2.3.2}Neo4j Substructure Search}{17}{subsection.2.3.2}% 
+\contentsline {section}{\numberline {2.4}Commercially Used Solutions}{18}{section.2.4}% 
+\contentsline {subsection}{\numberline {2.4.1}AMBIT-SMARTS}{18}{subsection.2.4.1}% 
+\contentsline {subsection}{\numberline {2.4.2}JChem Cartridge}{19}{subsection.2.4.2}% 
+\contentsline {subsection}{\numberline {2.4.3}ABCD Cartridge}{20}{subsection.2.4.3}% 
+\contentsline {chapter}{\numberline {3}Experimental Work}{21}{chapter.3}% 
+\contentsline {section}{\numberline {3.1}Introduction}{21}{section.3.1}% 
+\contentsline {section}{\numberline {3.2}Hypotheses to be verified by the experimental work}{22}{section.3.2}% 
+\contentsline {subsection}{\numberline {3.2.1}Hypothesis 1: GString vs GraphGrepSX}{22}{subsection.3.2.1}% 
+\contentsline {subsection}{\numberline {3.2.2}Hypothesis 2: GIRAS performance for large queries}{22}{subsection.3.2.2}% 
+\contentsline {subsection}{\numberline {3.2.3}Hypothesis 3: How the SQL and graph oriented databases perform in comparison with the domain specific solutions}{23}{subsection.3.2.3}% 
+\contentsline {section}{\numberline {3.3}Description of the Experimental Work}{23}{section.3.3}% 
+\contentsline {subsection}{\numberline {3.3.1}GraphGrepSX}{23}{subsection.3.3.1}% 
+\contentsline {subsection}{\numberline {3.3.2}GString}{24}{subsection.3.3.2}% 
+\contentsline {subsection}{\numberline {3.3.3}SQL Database}{26}{subsection.3.3.3}% 
+\contentsline {subsection}{\numberline {3.3.4}Graph Database}{27}{subsection.3.3.4}% 
+\contentsline {subsection}{\numberline {3.3.5}GIRAS}{28}{subsection.3.3.5}% 
+\contentsline {chapter}{\numberline {4}Experimental Results}{30}{chapter.4}% 
+\contentsline {chapter}{Conclusion}{31}{chapter*.4}% 
+\contentsline {chapter}{Bibliography}{32}{chapter*.5}% 
+\contentsline {chapter}{List of Figures}{35}{chapter*.6}% 
+\contentsline {chapter}{List of Tables}{36}{chapter*.7}% 
+\contentsline {chapter}{List of Abbreviations}{37}{chapter*.8}% 
+\contentsline {chapter}{Attachments}{38}{chapter*.9}% 
