@@ -3,13 +3,13 @@
 
 Querying is the essential utility of each database and the same applies to chemical databases. Nowadays, the largest publicly accessible databases contain around 100 million compounds. The chemical compounds can be naturally represented as graphs where atoms are represented as vertices and bonds are represented as edges. The typical chemical compound is a connected sparse graph with labeled edges and vertices where the size of the labeling alphabet for edges is less than 10 and size of the labeling alphabet for vertices is in order of low hundreds.\\
 
-The size of chemical compounds is variable. The vertex count varies typically from very small compounds with less then 10 vertices to huge compounds with hundreds of vertices. These sizes multiplied by the size of the database implies that the querying over such databases might be challenging task.\\
+The size of chemical compounds is variable. The vertex count varies typically from very small compounds with less then 10 vertices to huge compounds with hundreds of vertices. These sizes multiplied by the size of the database implies that querying over such databases might be a challenging task.\\
 
 The most common queries over chemical databases are exact match query, shortest path search, similarity search and substructure search which are usually used in graph databases. The latter will be the main point of interest in this thesis.\\
 
-The goal of subgraph querying is to obtain a list of graphs from the database which contain the queried graph as its subgraph. The result of this process has a wide range of utilization e.g. in chemoinformatics and bioinformatics and therefore in pharmaceutic industry. Since it is known as NP-complete problem several indexing techniques has been proposed to minimize the count of subgraph isomorphism tests.\\
+The goal of subgraph querying is to obtain a list of graphs from the database which contain the queried graph as its subgraph. The result of this process has a wide range of utilization e.g. in chemoinformatics and bioinformatics and therefore in pharmaceutic industry. Several indexing techniques have been proposed to minimize the number of subgraph isomorphism tests since it is known as NP-complete problem.\\
 
-There are several benchmarks of the mentioned indexing techniques already. The problem is that all found benchmarks has been created by the authors of some of the indexing technique and therefore the intention of the benchmark is to show that the particular index is more powerful than others. There is a lack of independent benchmarks which would compare the best performing indexes on the same data and on the same hardware.\\  
+There are several benchmarks of the mentioned indexing techniques already. The problem is that all found benchmarks has been created by the authors of some of the indexing technique and therefore the intention of the benchmark is to show that the particular index is more powerful than others. There is a lack of independent benchmarks which would compare the best performing indices on the same data and on the same hardware.\\  
 
 In this thesis we compare the best performing indexing techniques using the same environment. We also compare these techniques with the classical SQL database performance as well as with the performance of the modern graph databases.
 

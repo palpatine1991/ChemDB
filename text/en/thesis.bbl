@@ -220,6 +220,13 @@ Oracle.
 Ulrich Bauer.
 \newblock Minimum cycle basis algorithms for the chemistry development toolkit.
 
+\bibitem{kruskal}
+Joseph~B. Kruskal.
+\newblock On the shortest spanning subtree of a graph and the traveling
+  salesman problem.
+\newblock {\em Proceedings of the American Mathematical Society}, 7(1):48--50,
+  1956.
+
 \bibitem{pgx}
 Oracle.
 \newblock Pgx.

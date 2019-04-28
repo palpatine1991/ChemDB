@@ -1,24 +1,24 @@
 \chapter{Experimental Work}
 \section{Introduction}
-During the research of the related work, many questions arise. The papers are usually very brief and they miss a lot of implementation details. Sadly, even if we tried to contact the authors, we did not get the original source code for the described methods nor for the described benchmarks. The only exception is the \textit{GIRAS} method where we were successful in contacting its author and we do have the complete implementation.\\
+During the research of the related work, many questions have arisen. The papers are usually very brief and they miss a lot of implementation details. Sadly, even if we tried to contact the authors, we did not get the original source code for the described methods, nor for the described benchmarks. The only exception is the \textit{GIRAS} method where we were successful in contacting its author and we do have the complete implementation.\\
 
-All the benchmarks we mentioned in the previous chapter were a part of the papers which describe each particular method. Knowing that we cannot be much surprised that the each presented method outperformed the others. The question is whether we do get the same results on different data sets.\\
+All the benchmarks we mentioned in the previous chapter were a part of the papers which describe each particular method. Knowing that we cannot be much surprised that each presented method outperformed the others. The question is whether we do get the same results on different data sets.\\
 
-The other interesting question is how the winners of the various benchmarks would perform on the same data set. For example, when \textit{GString} outperforms the \textit{C-tree} just by few percents in \cite{GString} and \textit{GraphGrepSX} outperforms \textit{C-tree} by two levels of magnitude, we cannot implicitly say that \textit{GraphGrepSX} would outperform \textit{GString}. There might be three reasons why this presumption might be wrong:
+The other interesting question is how the winners of the various benchmarks would perform on the same data set. For example, when \textit{GString} outperforms \textit{C-tree} just by few percents in \cite{GString} and \textit{GraphGrepSX} outperforms \textit{C-tree} by two levels of magnitude, we cannot implicitly say that \textit{GraphGrepSX} would outperform \textit{GString}. There might be three reasons why this presumption might be wrong:
 
 \begin{itemize}
-	\item The lack of knowledge of the tested data set. In most the papers there is an information which dataset has been used. On the other hand, there is usually no information about which part of the dataset has been used since the dataset is usually cut down to only a small part of the original size. Moreover, not all the benchmarks are using the same datasets at all.
+	\item The lack of knowledge of the tested data set. In most of the papers there is an information which dataset has been used. On the other hand, there is usually no information about which part of the dataset has been used since the dataset is usually cut down to only a small part of the original size. Moreover, not all the benchmarks are using the same datasets at all.
 	
-	\item The lack of knowledge about the implementation of the verification step. In non of the mentioned papers is an information about which algorithm has been used for the final subgraph isomorphism testing. This can cause quite a significant difference in the final query measurements (although it cannot influence in the candidate set time computing).
+	\item The lack of knowledge about the implementation of the verification step. In none of the mentioned papers is an information about which algorithm has been used for the final subgraph isomorphism testing. This can cause quite a significant difference in the final query measurements (although it cannot influence in the candidate set time computing).
 	
 	\item We do not even know how much time the authors spent on the optimization of the code itself. Whether they cared more about the code readability and maintainability of the code or whether they did try to optimize the code as much as possible. Moreover, we do not know anything about which languages and compilers have been used.
 \end{itemize}
 
-What we did not find at all is some comparison of the performance of the described indexing techniques and utilization of SQL or NOSQL databases. It might be interesting see how significant difference in performance we get when we use very graph specific technique comparing to the very generic ones which the databases offers.\\
+What we did not find at all is some comparison of the performance of the described indexing techniques and utilization of SQL or graph databases. It might be interesting to see how significant difference in performance we get when we use very graph specific technique comparing to the very generic ones which the databases offers.\\
 
-In the following sections we will describe what hypotheses do we found interesting to prove or disprove and we describe the process and the implementation of those proves.\\
+In the following sections we will describe what hypotheses do we found interesting to prove or disprove and we describe the process and the implementation of those proofs.\\
 
-What is probably fair to mention is that due to the brevity of the related work we cannot be sure whether we did not omit some important part of the algorithms. There has been a lot a situations where we had to improvise since we found out that some very important implementation detail has been omitted in the method descriptions. These cases will be described in following sections as well. Although, we did implement all the methods with opened mind without any endeavor to make some method better or worse, we cannot guarantee that we did not do any mistake or bad implementation decision which can influence the final benchmark results.
+What is probably fair to mention is that due to the brevity of the related work we cannot be sure whether we did not omit some important part of the algorithms. There have been a lot a situations where we had to improvise since we found out that some very important implementation detail has been omitted in the method descriptions. These cases will be described in following sections as well. Although, we did implement all the methods with opened mind without any endeavor to make some method better or worse, we cannot guarantee that we did not do any mistake or bad implementation decision which can influence the final benchmark results.
 
 \section{Hypotheses to be verified by the experimental work}
 
@@ -26,19 +26,19 @@ In this section we will list several hypotheses which came to our mind during th
 
 \subsection{Hypothesis 1: GString vs GraphGrepSX}
 
-\textit{GString} and \textit{GraphGrepSX} are using very similar data structures for indexing the database. The main difference is that \textit{GraphGrepSX} is using all graph paths, \textit{GString} is using all paths in the condensed graph. Also \textit{GString} is using heuristics which are very specific for the our field of research, i.e. the organic chemical databases.\\
+\textit{GString} and \textit{GraphGrepSX} use very similar data structures for indexing the database. The main difference is that \textit{GraphGrepSX} uses all graph paths, whereas \textit{GString} uses all paths in the condensed graph. Also \textit{GString} uses heuristics which are very specific for our field of research, i.e. the organic chemical databases.\\
 
 That being said, we would expect that the index size of \textit{GString} will be significantly smaller due to the condensed graph usage. Also we would expect that due to the specificity of \textit{GString}, it should outperform \textit{GraphGrepSX} which can be used for any graph dataset.
 
 \subsection{Hypothesis 2: GIRAS performance for large queries}
 
-For small queries (of size 4 and 8) the performance of \textit{GIRAS} is about the same as \textit{C-tree}. On the other hand, for larger queries, the performance is ten times better comparing to \textit{C-tree} and even better results are there for the candidate set sizes. What we may question is how it will perform comparing to \textit{GString} and \textit{GraphGrepSX}. From the benchmarks comparisons we may say that \textit{GraphGrepSX} would be the winner. On the other hand the candidate set size should be much better for \textit{GIRAS}. Our guess is that despite the better candidate set size \textit{GIRAS} will not perform better than \textit{GraphGrepSX}.\\
+As described in paper \cite{GIRAS}, for small queries (of size 4 and 8) the performance of \textit{GIRAS} is about the same as \textit{C-tree}. On the other hand, for larger queries, the performance is ten times better comparing to \textit{C-tree} and even better results there are for the candidate set sizes. What we may question is how it will perform comparing to \textit{GString} and \textit{GraphGrepSX}. From the benchmarks comparisons we may say that \textit{GraphGrepSX} would be the winner. On the other hand, the candidate set size should be much better for \textit{GIRAS}. Our guess is that despite the better candidate set size \textit{GIRAS} will not perform better than \textit{GraphGrepSX}.\\
 
-Also, what might be interesting to measure is the index building time for \textit{GIRAS} since it is not mentioned in the paper and the algorithm seems quite computationally complicated.
+Also, what might be interesting to measure is the index building time for \textit{GIRAS} since it is not mentioned in the paper \cite{GIRAS} and the algorithm seems quite computationally complicated.
 
 \subsection{Hypothesis 3: How the SQL and graph oriented databases perform in comparison with the domain specific solutions}
 
-We may question what performance we may get when we use some SQL or graph database. In this case we do not need to implement any special algorithms for index building, we just use the possibilities of the databases, i.e. create a query which describes the subgraph and in case of SQL databases to build the indices to help the query process.\\
+We may question what performance we may get when we use an SQL or a graph database. In this case we do not need to implement any special algorithms for index building, we just use the possibilities of the databases, i.e. create a query which describes the subgraph and in case of SQL databases to build the indices to help the query process.\\
 
 We expect that the domain specific indexes will perform much better. But it might be very interesting to see how significant is the performance gap. Also, we may expect that graph databases will perform better compared to the SQL databases since they are usually optimized for storing and querying graphs.
 
@@ -51,14 +51,14 @@ In this section we will describe the implementation details of the experimental 
 	
 	\item Adapter for the \textit{GIRAS} implementation obtained from Dr. Azaouzi to be working on the same dataset
 	
-	\item Tools for inserting and querying the SQL and graph database
+	\item Tools for inserting and querying an SQL and a graph database
 \end{itemize}
 
-All the implementation has been written in Java language\cite{java}. Most of the work is using Java version 10, graph database adapter is using Java version 8 due to the technology dependencies.\\
+The whole implementation has been written in Java language \cite{java}. Most of the work uses Java version 10, a graph database adapter uses Java version 8 due to the technology dependencies.\\
 
-For the chemical database parsing we are using Chemistry Development \break Kit\cite{CDK} version 2.1.1, a Java library for working with chemical formats and data structures.\\
+For the chemical database parsing we use the Chemistry Development Kit \cite{CDK} version 2.1.1, a Java library for working with chemical formats and data structures.\\
 
-In case of verification step for the \textit{GraphGrepSX} and \textit{GString} algorithms, we are using the \textit{SMARTSQueryTool} from Chemistry Development Kit. It uses the \textit{Ullmann}\cite{Ullmann} algorithm inside.
+In case of verification step for the \textit{GraphGrepSX} and \textit{GString} algorithms, we are using the \textit{SMARTSQueryTool} from the Chemistry Development Kit. It uses \textit{Ullmann} \cite{Ullmann} algorithm inside.
 
 \subsection{GraphGrepSX} \label{graphgrep-implementation}
 
@@ -70,43 +70,43 @@ The previous statement does not affect the {maximum path length parameter $l$ of
 
 \subsection{GString}
 
-In contrary to the previous paragraphs, the \textit{GString} algorithm description offers a wide range of pieces which were not described at all. The most of the unknown parts are related to the original graph reduction process where the graph representing the atoms and bonds is transformed into a graph consists only from nodes representing cycles, stars and paths and edges represent just the connection between these structures.\\
+In contrary to the previous \textit{GraphGrepSX} description, the \textit{GString} algorithm description offers a wide range of pieces which were not described at all. Most of the unknown parts are related to the original graph reduction process where the graph representing the atoms and bonds is transformed into a graph consisting only of nodes representing cycles, stars and paths and edges representing the connection between these structures.\\
 
-The first issue which we faced was the process of extracting the cycles from the original graph. In the algorithm description there are no references on how to extract the cycles nor which method should be used. The obvious issue is that the cycles are not necessarily independent. They can share both vertices and edges and in some cases the vertices and edges can be shared even by several cycles.\\
+The first issue which we faced was the process of extracting the cycles from the original graph. In the algorithm description there are no references on how to extract the cycles, nor which method should be used. The obvious issue is that the cycles are not necessarily independent. They can share both vertices and edges and in some cases the vertices and edges can be shared even by several cycles.\\
 
-After some research we have found out that the Chemistry Development Kit has an utility for retrieving \textit{MCB - Minimum Cycle Basis} (also known as \textit{SSSR - Smallest Set of Smallest Rings}) described in \cite{Bauer}. \textit{Cycle Basis} is defined as a set of cycles by which you can express any other cycle present in particular graph as an result a symmetric difference operation on the basis.\\
+After some research we have found out that the Chemistry Development Kit has an utility for retrieving \textit{MCB - Minimum Cycle Basis} (also known as \textit{SSSR - Smallest Set of Smallest Rings}) described in \cite{Bauer}. \textit{Cycle Basis} is defined as a set of cycles by which one can express any other cycle present in a particular graph as the result of a symmetric difference operation on the cycle basis.\\
 
-The \textit{MCB} is defined as a cycle basis which consists of the shortest possible cycles. A good example might be naphthalene which you can see on Figure~\ref{fig:naphthalene}. It contains three cycles, two of size 6 and one of size 10, and any couple of these can serve as a cycle basis. On the other hand, there is only one \textit{MCB} which consist of two cycles of the size 6.\\
+The \textit{MCB} is defined as a cycle basis which consists of the shortest possible cycles. A good example might be naphthalene which we can see in Figure~\ref{fig:naphthalene}. It contains three cycles, two of size 6 and one of size 10, and any pair of these can serve as a cycle basis. On the other hand, there is only one \textit{MCB} which consist of two cycles of size 6.\\
 
-On this picture it is also clearly visible why we cannot use all the cycles. If all three cycles would be represented in \textit{GString} graph, it would be very unclear what is the the relationship between these cycles and how they should be connected in \textit{GString} graph. Also, it may lead to false positives from chemistry point of view because naphthalene consist of two aromatic cycles and it does not make sense to include an information about the cycle of the size 10.
+In this picture it is also clearly visible why we cannot use all the cycles. If all three cycles were represented in \textit{GString} graph, it would be very unclear what is the the relationship between these cycles and how they should be connected in \textit{GString} graph. Also, it may lead to false positives from chemistry point of view because naphthalene consist of two aromatic cycles and it does not make sense to include an information about the cycle of the size 10.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.25\textwidth]{../img/naphthalene01.png}
-	\caption{Molecule of Naphthalene}
+	\caption{Molecule of naphthalene}
 	\label{fig:naphthalene}
 \end{figure}
 
-The \textit{MCB} finder utility requires specification of the maximum cycle size parameter. This parameter defines a threshold above which the cycles are not considered as cycles. When we tried to set this threshold high enough to not omit any cycle in the testing database, we had big issues with performance and in some cases the process dies on the lack of memory. Since the target of this thesis is to measure the performance in usual use-cases, we have decided to set the threshold to 10 which should cover the vast majority of real cases.\\
+The \textit{MCB} finder utility requires specification of the maximum cycle size parameter. This parameter defines a threshold above which the cycles are not considered as cycles. When we tried to set this threshold high enough to not omit any cycle in the testing database, we had big issues with performance and in some cases the process died on the lack of memory. Since the target of this thesis is to measure the performance in usual use-cases, we have decided to set the threshold to 10 which should cover the vast majority of real cases.\\
 
-Bigger cycles are described as paths of the length equal to the cycle size. These paths begin at each point in which the cycle interfere with another \textit{GString} structure. For each such interference there is are two paths, one in each direction\\
+Bigger cycles are described as paths of the length equal to the cycle size. These paths begin at each point in which the cycle interfere with another \textit{GString} structure. For each such interference there are two paths, one in each direction\\
 
-Another question which arose is how to set the threshold which defines the minimum degree of an atom to be considered as star. The original thought was to set the threshold to 3. The reason was that if we set this threshold to higher number we get another problem to solve - how to handle path joints. We can demonstrate this problem on methyl propionate on Figure~\ref{fig:methyl-propionate}\\
+Another question which arose is how to set the threshold which defines the minimum degree of an atom to be considered as a star. The original thought was to set the threshold to 3. The reason was that if we set this threshold to a higher number we get another problem to solve - how to handle path joints. We can demonstrate this problem on methyl propionate in Figure~\ref{fig:methyl-propionate}\\
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.25\textwidth]{../img/methyl-propionate.jpg}
-	\caption{Molecule of Methyl Propionate}
+	\caption{Molecule of methyl propionate}
 	\label{fig:methyl-propionate}
 \end{figure}
 
 We can see that there are six possible paths, two are between the carbons (one from each side), and four between each carbon and oxygen (again, one from each side). If we define the threshold of stars to three, we do not have to handle such situations because in our algorithm, we extract the stars first and then we are finding paths connected to already found stars and cycles. In this case we would have 1 star (the atom in the middle) and two paths connected to it (the oxygen connected by double bond would be considered as a branch which is by definition a path of length 1). This would simplify the algorithm quite a lot because we would not need to handle paths which are connected to another paths.\\
 
-During the testing we found out that it is possible to use this threshold but in practice, we would lost majority of results. The reason is the same as we described in the first chapter. If we try to query a path which may be described as $C-O-C-C-C$ there is obviously such path in methyl propionate but our algorithm would filter this candidate out because it does not contain a path of size 5 but a star and two paths of length 2. Since this is a very common use-case we had to use higher threshold and develop some logic for handling the connected paths.\\
+During the testing we found out that it is possible to use this threshold but in practice, we would loose the majority of results. The reason is the same as we described in the first chapter. If we try to query a path which may be described as $C-O-C-C-C$ there is obviously such path in methyl propionate but our algorithm would filter this candidate out, because it does not contain a path of length 5 but a star and two paths of length 2. Since this is a very common case (it is very rare that chemical compounds do contain long paths without any branching), we had to use a higher threshold and develop some logic for handling the connected paths.\\
 
-What we did was to implement DFS which finds all the paths and all of these paths are included into the \textit{GString} graph. In case of methyl propionate there would be 2 independent paths, since we do not have a connection to any other structure, we start DFS in random atom with degree 1. This is quite a special case because the molecule consist only of paths. If the methyl propionate would be connected on one end to star or cycle, there would be 2 nodes in the \textit{GString} graph - one cycle/star and two paths connected to this structure.\\
+What we did was to implement DFS which finds all the paths and all of these paths are included into the \textit{GString} graph. In case of methyl propionate there would be 2 independent paths, since we do not have a connection to any other structure, we start DFS in random atom with degree 1. This is quite a special case because the molecule consist only of paths. If the methyl propionate would be connected on one end to a star or a cycle, there would be 2 nodes in the \textit{GString} graph - one cycle/star and two paths connected to this structure.\\
 
-The rest of the algorithm mimics the \textit{GraphGrepSX} implementation including the notes described in \ref{graphgrep-implementation}.
+The rest of the algorithm mimics the \textit{GraphGrepSX} implementation including the notes described in section \ref{graphgrep-implementation}.
 
 \subsection{SQL Database}
 
@@ -115,70 +115,70 @@ We have based our implementation on the proposal in \cite{SQL}. We have chosen t
 Based on the mentioned paper we have designed our table with 5 columns - \textbf{ATOM1\_ID}, \textbf{ATOM2\_ID}, \textbf{BOND\_ID}, \textbf{BOND\_TYPE} and \break \textbf{COMPOUND\_ID}.\\
 
 
-The implementation itself is quite straightforward and it consist of two parts. The first part is a routine for the database creation. In this routine we just iterate through the whole database and for each molecule, at first, we iterate through all its atoms and assign an unique ID to each of them, later, we iterate through all the bonds and for each we create one \textbf{INSERT} statement.\\
+The implementation itself is quite straightforward and it consist of two parts. The first part is a routine for the database creation. In this routine we just iterate through the whole database and for each molecule, at first, we iterate through all its atoms and assign an unique ID to each of them. Later, we iterate through all the bonds and for each we create one \textbf{INSERT} statement.\\
 
-We already have the IDs of atoms and compound ID (this comes from the original chemical DB on the input), we generate an unique ID for bond itself. Type of bond consists of the type of each atom at the bond's end and the type of the bond itself. Each bond, if it is not symmetrical, is represented by two rows in the database because we need to make the graph representation undirected. During the process of inserting the bonds we are updating the in-memory statistics - we are maintaining the count of rows for each bond type.\\
+We already have the IDs of atoms and the compound ID (this comes from the original chemical DB on the input), we generate an unique ID for the bond itself. The type of bond consists of the type of each atom at the bond's end and the type of the bond itself. Each bond, if it is not symmetrical, is represented by two rows in the database, because we need to make the graph representation undirected. During the process of inserting the bonds we are updating the in-memory statistics - we are maintaining the count of rows for each bond type.\\
 
 The inserts are happening in batches. We did test the performance and found out that batch size of 50 rows for one \textbf{INSERT} statement is quite optimal.\\
 
-The second part of the implementation is the query building. As proposed in \cite{SQL}, at first we build the minimal spanning tree of the query graph. The edge value is based on the database statistics which we gather during the insert phase. For spanning tree construction we have implemented Kruskal algorithm.\\
+The second part of the implementation is the query building. As proposed in \cite{SQL}, at first we build the minimal spanning tree of the query graph. The edge value is based on the database statistics which we gather during the insert phase. For spanning tree construction we have implemented Kruskal algorithm \cite{kruskal}.\\
 
-Then, in the spanning tree we find the edge with lowest value and from this edge we start a BFS algorithm and for each edge we add the rule into the \textbf{SELECT} statement. We also need to mark all the neighbours by stating that atom ID of one edge is equal to the atom ID of the neighbour edge. The same we have to do for non-neighbours. For each such pair we have to explicitly state that their atom IDs are not equal. The same we have to do for the bonds, we need all the bonds unique so we have to state for each pair of bonds that their IDs are not equal.\\
+Then, in the spanning tree we find the edge with the lowest value and from this edge we start a BFS algorithm and for each edge we add the rule into the \textbf{SELECT} statement. We also need to mark all the neighbours by stating that atom ID of one edge is equal to the atom ID of the neighbour edge. The same we have to do for non-neighbours. For each such pair we have to explicitly state that their atom IDs are not equal. The same we have to do for the bonds, we need all the bonds unique so we have to state for each pair of bonds that their IDs are not equal.\\
 
-Since we are interested only in the information whether the subgraph is present in particular compound, we start our \textbf{SELECT} statement with \textbf{SELECT DISTINCT b0.COMPOUND\_ID FROM ...} which returns the set of compounds matching the subgraph query which is exactly the result we need.
+Since we are interested only in the information whether the subgraph is present in particular compound, we start the \textbf{SELECT} statement with \textbf{SELECT DISTINCT b0.COMPOUND\_ID FROM ...} which returns the set of compounds matching the subgraph query which is exactly the result we need.
 
 \subsection{Graph Database}
 
-As observations of paper \cite{Hoksza} state that the Neo4j is not performing well in subgraph querying, we have tried to look for alternative graph databases which can perform better. We found out graph analytic tool \textit{PGX} \cite{pgx}.\\
+As observations of paper \cite{Hoksza} state that the Neo4j is not performing well in subgraph querying, we have tried to look for alternative graph databases which can perform better. We found the graph analytic tool \textit{PGX} \cite{pgx}.\\
 
-It is not a graph database in its core meaning. It is a toolkit for graph analysis with an ability to load and store graphs from / to various data formats. It does support a SQL-like query language called \textit{PGQL} \cite{pgql} and it advertise a scalable solution with a focus to high performance.\\
+It is not a graph database in its original meaning. It is a toolkit for graph analysis with an ability to load and store graphs from / to various data formats. It does support an SQL-like query language called \textit{PGQL} \cite{pgql} and it advertises a scalable solution with a focus on high performance.\\
 
-Since it is a analytic tool and not a real database, it does not support ACID transaction model as other databases do but for the purposes of this thesis it does not take serious role.\\
+Since it is an analytic tool and not a real database, it does not support the ACID transaction model as other databases do, but for the purposes of this thesis it does not take serious role.\\
 
-Oracle did a benchmark which compares the performance of subgraph matching in PGX and Neo4j. The results are available at presentation \cite{pgx-neo4j} on slide 31. Note that the benchmark is comparing the results on so-called \textit{hot data}. In other words, it makes sure that the graphs which are being queried are already loaded in memory to prevent result inconsistencies due to the data fetching from the disk.\\
+Oracle did a benchmark which compares the performance of subgraph matching in PGX and Neo4j. The results are available at presentation \cite{pgx-neo4j} on slide 31. Note that the benchmark compares the results on so-called \textit{hot data}. In other words, it makes sure that the graphs which are being queried are already loaded in memory to prevent result inconsistencies due to data fetching from the disk.\\
 
 The results of this benchmark are quite convincing. Although there are huge differences of result times according to the query size, PGX outperforms Neo4J in all categories.\\
 
-The first issue we had to solve was that although Oracle is offering windows batch files for starting PGX, we were not successful to successfully run the database. To make the results of the performance measuring as precise as possible, we did not want to use other hardware or different operating system for executing the performance testing of PGX than the hardware and system used for other performance testing of other methods.\\
+The first issue we had to solve was that although Oracle offers windows batch files for starting PGX, we were not successful to run the database. To make the results of the performance measuring as precise as possible, we did not want to use other hardware or different operating system for executing the performance testing of PGX than the hardware and system used for other performance testing of other methods.\\
 
-As a viable compromise we have decided to use the Windows 10 Subsystem for Linux utility \cite{wsl} and we have downloaded the Ubuntu system to be used in this manner. On Ubuntu there were no issues with the PGX database usage.\\
+As a viable compromise we have decided to use the Windows 10 Subsystem for Linux utility \cite{wsl} and we have downloaded the Ubuntu system to be used in this way. On Ubuntu there were no issues with the PGX database usage.\\
 
-The client side has been implemented in Windows environment using PGX Java client library. The implementation is quite straight-forward. Instead of creating the graph in PGX for every single molecule in the database, we create one huge graph where each graph component represents one molecule. This helps the performance since we do not have to load and store the a huge number of small files, we are executing query on just one graph instead.\\
+The client side was implemented in Windows environment using the PGX Java client library. The implementation is quite straight-forward. Instead of creating the graph in PGX for every single molecule in the database, we create one huge graph where each graph component represents one molecule. This helps the performance since we do not have to load and store the a huge number of small files, we are executing query on just one graph instead.\\
 
-For each vertex we generate a unique ID, use label to mark the representing atom symbol and we store a molecule ID as a vertex's property. For each edge we use label to mark the type of represented bond.\\
+For each vertex we generate a unique ID, use a label to mark the representing atom symbol and we store a molecule ID as a vertex's property. For each edge we use a label to mark the type of represented bond.\\
 
-For the querying we are using the PGQL language which is supported by PGX. For each atom in query graph we generate an unique ID and then for each bond in query graph we insert a rule into the query where we define that the two atoms with particular IDs and of particular type are connected by a bond of a particular type. As the last thing in the query we need to state for each pair of atom IDs that they represent different vertex.\\
+For the querying we use the PGQL language which is supported by PGX. For each atom in the query graph we generate a unique ID and then for each bond in the query graph we insert a rule into the query where we define that the two atoms with particular IDs and of particular type are connected by a bond of a particular type. As the last thing in the query we need to state for each pair of atom IDs that they represent different vertex.\\
 
-As an demonstration of simplicity of PGQL usage in our case might be a query representing the path of three carbons. We start a query with the following statement which tells us that we want to select all the molecule IDs (which are being stored for each vertex) except the duplicates. Note that the $a1$ is an ID of the first atom in query graph.
+A demonstration of simplicity of PGQL usage in our case might be a query representing the path of three carbons. We start the query with the following statement which tells us that we want to select all molecule IDs (which are being stored for each vertex) except the duplicates. Note that $a1$ is an ID of the first atom in the query graph.
 
 \begin{center}
 	\textbf{SELECT DISTINCT a1.moleculeId}
 \end{center}
 
-The following part of PGQL query describes the bonds in the query graph. The colon sign means that we are describing the label of the vertex or edge. We can see that in this case we are looking for two pairs of carbons connected by a single bond (represented by \textbf{S} character), where the \textbf{a2} atom is shared in these two bonds.
+The following part of PGQL query describes the bonds in the query graph. The colon sign means that we describe the label of the vertex or edge. We can see that in this case we are looking for two pairs of carbons connected by a single bond (represented by character \textbf{S}), where atom \textbf{a2} is shared in these two bonds.
 
 \begin{center}
 	\textbf{MATCH (a1:C)-[:S]-(a2:C), (a2:C)-[:S]-(a3:C)}
 \end{center}
 
-As the last part we need to state that all atoms \textbf{a1}, \textbf{a2} and \textbf{a3} are different. Otherwise the query would match for every pair of connected carbons since \textbf{a1} and \textbf{a3} could represent the same atom
+As the last part we need to state that all atoms \textbf{a1}, \textbf{a2} and \textbf{a3} are different. Otherwise the query would match every pair of connected carbons since \textbf{a1} and \textbf{a3} could represent the same atom
 
 \begin{center}
 	\textbf{WHERE a1 $<>$ a2 AND a1 $<>$ a3 AND a2 $<>$ a3}
 \end{center}
 
-We must admit that the work with PGQL is quite intuitive and comparing to building the SQL query it is way more user friendly. On the other hand, this is quite an expected result since PGQL is designed to query graphs and SQL is designed to query generic data.
+We must admit that the work with PGQL is quite intuitive and compared to building the SQL query it is way more user-friendly. On the other hand, this is quite an expected result since PGQL is designed to query graphs and SQL is designed to query generic data.
 
 \subsection{GIRAS}
 
-As we were successful with the request of the original implementation of \textit{GIRAS} algorithm, there was not much implementation needed on the side of this thesis. For the measurement we are using the original solution. We had to implement only an adapter which translates the chemical database which we are using for other methods to the format - vertex and edge lists - accepted by the \textit{GIRAS} code.\\
+As we were successful with the request of the original implementation of the \textit{GIRAS} algorithm, there was not much implementation needed on the side of this thesis. For the measurement we are using the original solution. We had to implement only an adapter which translates the chemical database which we are using for other methods to the format - vertex and edge lists - accepted by the \textit{GIRAS} code.\\
 
-However, during the testing we have found out that the results are not matching the results of other methods. After some investigation, we have realized that the problem is not in the implementation but in the algorithm itself. The core of the problem is in the way how the structures which are being indexed are chosen.\\
+However, during the testing we have found out that the results do not match the results of other methods. After some investigation, we have realized that the problem is not in the implementation but in the algorithm itself. The core of the problem is in the way how the structures which are being indexed are chosen.\\
 
-As we mentioned in the analysis chapter, \textit{GIRAS} method is trying to find the rare substructures with the condition that every graph in the database has to be represented by at least one rare subgraph. We have found out that when we create a query which should have only several results, everything works fine. On the other hand when we build a query which should match nearly whole database, we do not get any results at all.\\
+As we mentioned in the analysis chapter, the \textit{GIRAS} method is trying to find the rare substructures with the condition that every graph in the database has to be represented by at least one rare subgraph. We have found out that when we create a query which should have only several results, everything works fine. On the other hand when we build a query which should match nearly the whole database, we do not get any results at all.\\
 
-We did an explicit test which proves that the algorithm cannot work properly in all cases. We have created a database with 4 molecules where each of them contain a path of four aromatic carbons but in each of them there is a unique substructure which do not contain this particular path.\\
+We did an explicit test which proves that the algorithm cannot work properly in all cases. We have created a database with 4 molecules where each of them contains a path of four aromatic carbons but in each of them there is a unique substructure which does not contain this particular path.\\
 
-When we have executed a query of the mentioned path we did not get any results. When we have added new molecule into the database which represents the query itself, i.e. path of four aromatic carbons, and we ran the query again, the result was that the query matches all the graphs in the database.\\
+When we have executed a query of the mentioned path we did not get any results. When we have added a new molecule into the database which represents the query itself, i.e. a path of four aromatic carbons, and we ran the query again, the result was that the query matches all the graphs in the database.\\
 
-This observation invalidates the statement in \cite{GIRAS} that the indexing is complete. We may then question how the results of the performance measurements are valid. If we know that the indexing is incomplete, it should be also faster since the index is smaller and therefore it should take less time to use it. So even for the queries which results are valid, we may question how seriously we can take the performance numbers.
+This observation invalidates the statement in \cite{GIRAS} that the indexing is complete. We may then question how the results of the performance measurements are valid. If we know that the indexing is incomplete, it should be also faster since the index is smaller and therefore it should take less time to use it. So even for the queries whose results are valid, it is questionable how seriously we can take the performance numbers.
