@@ -61,19 +61,21 @@ public class SDFParser {
                 continue;
             }
 
-            //System.out.println((String)molecule.getProperty(propertyID));
-            //if (molecule.getProperty(propertyID).equals("CHEMBL1179192"))
-                result.put(molecule.getProperty(propertyID), molecule);
             count++;
             if (count % 50000 == 0) {
                 System.out.println(count);
             }
-            if (count == 500) {
+
+            //System.out.println((String)molecule.getProperty(propertyID));
+//            if (molecule.getProperty(propertyID).equals("CHEMBL63677"))
+                result.put(molecule.getProperty(propertyID), molecule);
+
+            if (count == 100000) {
                 break;
             }
         }
 
-        //System.out.println(count);
+        System.out.println(count);
 
         return result;
     }

@@ -8,16 +8,19 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class TreeNode {
+    public static int count = 0;
+
     Map<String, NodeMatchCount> matches = new HashMap<>();
     Map<String, TreeNode> children = new HashMap<>();
     int size;
     GStringNodeType type;
 
 
-    public TreeNode() {}
+    public TreeNode() {TreeNode.count++;}
     public TreeNode(GStringNode origin) {
         this.size = origin.size;
         this.type = origin.type;
+        TreeNode.count++;
     }
 
     public TreeNode getChild(GStringNode origin) {

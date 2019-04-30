@@ -9,7 +9,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import java.util.*;
 
 public class GString {
-    TreeNode root = new TreeNode();
+    public TreeNode root = new TreeNode();
     HashMap<String, IAtomContainer> db;
     int maxPathLength;
     String queryId = "query";

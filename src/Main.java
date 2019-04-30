@@ -1,3 +1,4 @@
+import GString.TreeNode;
 import Utils.GraphSerializer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
@@ -14,8 +15,8 @@ import java.util.HashMap;
 public class Main {
 
     public static void main(String[] args) throws CDKException {
-        //SDFParser parser = new SDFParser("../chembl_24.sdf");
-        SDFParser parser = new SDFParser("../chembl_test1.sdf");
+        SDFParser parser = new SDFParser("../chembl_24.sdf");
+//        SDFParser parser = new SDFParser("../chembl_test1.sdf");
         HashMap<String, IAtomContainer> db = null;
 
         try {
@@ -44,18 +45,10 @@ public class Main {
         //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
         //String query = "CCCC";
 
-        String query = QueryUtils.query4_1;
-
-
-        try {
-            SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-            queryContainer = sp.parseSmiles(query);
-        } catch (InvalidSmilesException e) {
-            System.err.println(e.getMessage());
-        }
+        String[] querySet = QueryUtils.query16;
         //endregion
 
-        if (true) {
+        if (false) {
             SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
             HashMap<String, IAtomContainer> querydb = new HashMap<>();
             querydb.put("0", sp.parseSmiles(QueryUtils.query4_1));
@@ -88,6 +81,8 @@ public class Main {
         long estimatedTime = System.nanoTime() - startTime;
         System.out.print("Build Index Time: ");
         System.out.println(estimatedTime / 1000000);
+        //System.out.println(TreeNode.count);
+        //((GStringDBTester) tester).gstring.root = null;
         System.gc();
         long usedMemory = runtime.totalMemory() - runtime.freeMemory() - usedMemoryBefore;
         System.out.print("Build Index Consumed memory: ");
@@ -95,37 +90,52 @@ public class Main {
         //endregion
 
         //region getting candidate set
-        startTime = System.nanoTime();
 
-        HashMap<String, IAtomContainer> candidateSet = tester.getCandidateSet(queryContainer);
 
-        estimatedTime = System.nanoTime() - startTime;
-        System.out.print("Obtaining candidate set Time: ");
-        System.out.println(estimatedTime / 1000000);
-        System.out.print("Candidate set size: ");
-        if (candidateSet != null) {
-            System.out.println(candidateSet.size());
+        int counter = 1;
+        for (String query : querySet) {
+            System.out.println("-----------------" + counter++ + "-------------------");
+
+            try {
+                SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+                queryContainer = sp.parseSmiles(query);
+            } catch (InvalidSmilesException e) {
+                System.err.println(e.getMessage());
+            }
+
+            startTime = System.nanoTime();
+
+            HashMap<String, IAtomContainer> candidateSet = tester.getCandidateSet(queryContainer);
+
+            estimatedTime = System.nanoTime() - startTime;
+            System.out.print("Obtaining candidate set Time: ");
+            System.out.println(estimatedTime / 1000000);
+            System.out.print("Candidate set size: ");
+            if (candidateSet != null) {
+                System.out.println(candidateSet.size());
+            }
+            else {
+                System.out.println();
+            }
+
+            //endregion
+
+            //region getting final results
+            startTime = System.nanoTime();
+
+            ArrayList<String> results = tester.getResults(queryContainer, candidateSet, query);
+
+            estimatedTime = System.nanoTime() - startTime;
+            System.out.print("Verification Time: ");
+            System.out.println(estimatedTime / 1000000);
+            System.out.print("Result set size: ");
+            System.out.println(results.size());
+            //endregion
+
+            for (String s  : results) {
+                //System.out.println(s);
+            }
         }
-        else {
-            System.out.println();
-        }
 
-        //endregion
-
-        //region getting final results
-        startTime = System.nanoTime();
-
-        ArrayList<String> results = tester.getResults(queryContainer, candidateSet, query);
-
-        estimatedTime = System.nanoTime() - startTime;
-        System.out.print("Verification Time: ");
-        System.out.println(estimatedTime / 1000000);
-        System.out.print("Result set size: ");
-        System.out.println(results.size());
-        //endregion
-
-        for (String s  : results) {
-            System.out.println(s);
-        }
     }
 }
