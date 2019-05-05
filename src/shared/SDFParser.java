@@ -70,7 +70,7 @@ public class SDFParser {
 //            if (molecule.getProperty(propertyID).equals("CHEMBL63677"))
                 result.put(molecule.getProperty(propertyID), molecule);
 
-            if (count == 100000) {
+            if (count == 10000) {
                 break;
             }
         }

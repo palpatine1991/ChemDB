@@ -11,9 +11,15 @@ public class SqlDBTester implements IDBTester {
     @Override
     public void buildIndex(HashMap<String, IAtomContainer> db) {
         sql = new SqlHandler();
-        sql.clearDB();
+        int count = 0;
+       // sql.clearDB();
         for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
             sql.createMolecule(entry.getValue());
+            count++;
+
+            if (count % 1000 == 0) {
+                System.out.println(count);
+            }
         }
 
         sql.commitInsert();

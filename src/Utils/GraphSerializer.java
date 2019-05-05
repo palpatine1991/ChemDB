@@ -8,9 +8,18 @@ import uk.ac.ebi.beam.Graph;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class GraphSerializer {
+    static int minSize = 999999;
+    static int maxSize = 0;
+    static int vertexSum = 0;
+    static int edgeSum = 0;
+    static HashSet<String> vertexLabels = new HashSet<>();
+    static HashSet<String> edgeLabels = new HashSet<>();
+
     public static void serializeDB(String fileName, HashMap<String, IAtomContainer> db) {
 
         try {
@@ -24,7 +33,41 @@ public class GraphSerializer {
             for (Map.Entry<String, IAtomContainer> entry : db.entrySet()) {
                 GraphSerializer.serializeGraph(writer, recordsWriter, entry.getKey(), entry.getValue(), order);
 
+                int size = entry.getValue().getAtomCount();
+                int edges = entry.getValue().getBondCount();
+
+                GraphSerializer.edgeSum += edges;
+                GraphSerializer.vertexSum += size;
+                if (size == 1) {
+                    System.out.println(entry.getKey());
+                }
+                if (size < GraphSerializer.minSize) {
+                    GraphSerializer.minSize = size;
+
+                }
+                if (size > GraphSerializer.maxSize) GraphSerializer.maxSize = size;
+
                 order++;
+            }
+
+            System.out.print("Min Size: ");
+            System.out.println(GraphSerializer.minSize);
+            System.out.print("Max Size: ");
+            System.out.println(GraphSerializer.maxSize);
+            System.out.print("Average Size: ");
+            System.out.println(GraphSerializer.vertexSum / 100000);
+            System.out.print("Average edge count: ");
+            System.out.println(GraphSerializer.edgeSum / 100000);
+
+            System.out.println(vertexLabels.size());
+            System.out.println(edgeLabels.size());
+
+            for(String label : vertexLabels) {
+                System.out.println(label);
+            }
+
+            for(String label : edgeLabels) {
+                System.out.println(label);
             }
 
             writer.close();
@@ -45,10 +88,12 @@ public class GraphSerializer {
         for (IAtom atom : graph.atoms()) {
             atom.setID(Integer.toString(atomOrder++));
             GraphSerializer.printGraphNode(dbWriter, atom);
+            GraphSerializer.vertexLabels.add(atom.getSymbol());
         }
 
         for (IBond bond : graph.bonds()) {
             GraphSerializer.printGraphEdge(dbWriter, bond);
+            GraphSerializer.edgeLabels.add(bond.getOrder().toString());
         }
 
     }

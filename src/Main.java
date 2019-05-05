@@ -25,50 +25,53 @@ public class Main {
             System.out.println("DB file not found");
         }
 
-//        try {
-//            SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-//            db = new HashMap<>();
-//            IAtomContainer x = sp.parseSmiles("c1ccccc1");
-//            db.put("xxx", sp.parseSmiles("C[CH](C=CC[CH](O)C12CC3CC(CC(C3)C1)C2)[CH]4CC[CH]5C(CCC[C]45C)=CC=C6C[CH](O)C(=C)[CH](O)C6"));
-//        } catch (InvalidSmilesException e) {
-//            System.err.println(e.getMessage());
-//        }
 
-        //region SMILES testing
         IAtomContainer queryContainer = null;
-        //String query = "c1cc(-O-C(Cc1ccccc1)-C)ccc1"; //no match, but GraphGrepSX has a lot a false positives, GString has empty set!
-        //String query = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
-        //String query = "c1ccccc1c2ccccc2c3ccccc3c4ccccc4c5ccccc5";
-        //String query = "n1ccccc1c2ccccc2";
-        //String query = "Oc1ccc(\\C=C(/C#N)\\C(=O)OC\\C=C\\c2ccccc2)cc1O"; //1 exact match
-        //String query = "SCCCCC(=O)O";
-        //String query = "N1-C-N=C-C=C1"; //GString has higher candidate set because of only 1 cycle which is almost everywhere
-        //String query = "CCCC";
 
         String[] querySet = QueryUtils.query16;
-        //endregion
 
+        //turn on to execute graph serialization for GIRAS
         if (false) {
             SmilesParser sp  = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-            HashMap<String, IAtomContainer> querydb = new HashMap<>();
-            querydb.put("0", sp.parseSmiles(QueryUtils.query4_1));
-            querydb.put("1", sp.parseSmiles(QueryUtils.query4_2));
-            querydb.put("2", sp.parseSmiles(QueryUtils.query4_3));
-            querydb.put("3", sp.parseSmiles(QueryUtils.query4_4));
-            querydb.put("4", sp.parseSmiles(QueryUtils.query4_5));
-            querydb.put("5", sp.parseSmiles(QueryUtils.query4_6));
-            querydb.put("6", sp.parseSmiles(QueryUtils.query4_7));
-            querydb.put("7", sp.parseSmiles(QueryUtils.query4_8));
-            querydb.put("8", sp.parseSmiles(QueryUtils.query4_9));
-            querydb.put("9", sp.parseSmiles(QueryUtils.query4_10));
+            HashMap<String, IAtomContainer> querydb4 = new HashMap<>();
+            HashMap<String, IAtomContainer> querydb8 = new HashMap<>();
+            HashMap<String, IAtomContainer> querydb16 = new HashMap<>();
+            HashMap<String, IAtomContainer> querydb24 = new HashMap<>();
+
+            int order = 1;
+
+            for(String query : QueryUtils.query4) {
+                querydb4.put(Integer.toString(order++), sp.parseSmiles(query));
+            }
+
+            order = 1;
+
+            for(String query : QueryUtils.query8) {
+                querydb8.put(Integer.toString(order++), sp.parseSmiles(query));
+            }
+
+            order = 1;
+
+            for(String query : QueryUtils.query16) {
+                querydb16.put(Integer.toString(order++), sp.parseSmiles(query));
+            }
+
+            order = 1;
+
+            for(String query : QueryUtils.query24) {
+                querydb24.put(Integer.toString(order++), sp.parseSmiles(query));
+            }
             GraphSerializer.serializeDB("testDB", db);
-            GraphSerializer.serializeDB("queryDB", querydb);
+            GraphSerializer.serializeDB("queryDB4", querydb4);
+            GraphSerializer.serializeDB("queryDB8", querydb8);
+            GraphSerializer.serializeDB("queryDB16", querydb16);
+            GraphSerializer.serializeDB("queryDB24", querydb24);
             return;
         }
 
-        IDBTester tester = new GraphGrepSXDBTester();
+//        IDBTester tester = new GraphGrepSXDBTester();
 //        IDBTester tester = new GStringDBTester();
-//        IDBTester tester = new SqlDBTester();
+        IDBTester tester = new SqlDBTester();
 
         //region index building
         System.gc();
@@ -81,19 +84,18 @@ public class Main {
         long estimatedTime = System.nanoTime() - startTime;
         System.out.print("Build Index Time: ");
         System.out.println(estimatedTime / 1000000);
-        //System.out.println(TreeNode.count);
-        //((GStringDBTester) tester).gstring.root = null;
         System.gc();
         long usedMemory = runtime.totalMemory() - runtime.freeMemory() - usedMemoryBefore;
         System.out.print("Build Index Consumed memory: ");
         System.out.println(usedMemory / 1048576);
         //endregion
 
-        //region getting candidate set
 
 
         int counter = 1;
         for (String query : querySet) {
+            //region getting candidate set
+
             System.out.println("-----------------" + counter++ + "-------------------");
 
             try {
