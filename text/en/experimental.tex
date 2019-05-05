@@ -1,4 +1,4 @@
-\chapter{Experimental Work}
+\chapter{Experimental Work} \label{experimental}
 \section{Introduction}
 During the research of the related work, many questions have arisen. The papers are usually very brief and they miss a lot of implementation details. Sadly, even if we tried to contact the authors, we did not get the original source code for the described methods, nor for the described benchmarks. The only exception is the \textit{GIRAS} method where we were successful in contacting its author and we do have the complete implementation.\\
 
@@ -20,7 +20,7 @@ In the following sections we will describe what hypotheses do we found interesti
 
 What is probably fair to mention is that due to the brevity of the related work we cannot be sure whether we did not omit some important part of the algorithms. There have been a lot a situations where we had to improvise since we found out that some very important implementation detail has been omitted in the method descriptions. These cases will be described in following sections as well. Although, we did implement all the methods with opened mind without any endeavor to make some method better or worse, we cannot guarantee that we did not do any mistake or bad implementation decision which can influence the final benchmark results.
 
-\section{Hypotheses to be verified by the experimental work}
+\section{Hypotheses to be verified by the experimental work}\label{hypotheses}
 
 In this section we will list several hypotheses which came to our mind during the related work research.
 
@@ -28,19 +28,30 @@ In this section we will list several hypotheses which came to our mind during th
 
 \textit{GString} and \textit{GraphGrepSX} use very similar data structures for indexing the database. The main difference is that \textit{GraphGrepSX} uses all graph paths, whereas \textit{GString} uses all paths in the condensed graph. Also \textit{GString} uses heuristics which are very specific for our field of research, i.e. the organic chemical databases.\\
 
-That being said, we would expect that the index size of \textit{GString} will be significantly smaller due to the condensed graph usage. Also we would expect that due to the specificity of \textit{GString}, it should outperform \textit{GraphGrepSX} which can be used for any graph dataset.
+\begin{itemize}
+	\item \textbf{Hypothesis H1.1}: The index size of \textit{GString} will be significantly smaller compared to \textit{GraphGrepSX} due to the condensed graph usage.
+	\item \textbf{Hypothesis H1.2}:  Due to the specificity of \textit{GString}, it will outperform \textit{GraphGrepSX} which can be used for any graph dataset.
+\end{itemize}
 
 \subsection{Hypothesis 2: GIRAS performance for large queries}
 
-As described in paper \cite{GIRAS}, for small queries (of size 4 and 8) the performance of \textit{GIRAS} is about the same as \textit{C-tree}. On the other hand, for larger queries, the performance is ten times better comparing to \textit{C-tree} and even better results there are for the candidate set sizes. What we may question is how it will perform comparing to \textit{GString} and \textit{GraphGrepSX}. From the benchmarks comparisons we may say that \textit{GraphGrepSX} would be the winner. On the other hand, the candidate set size should be much better for \textit{GIRAS}. Our guess is that despite the better candidate set size \textit{GIRAS} will not perform better than \textit{GraphGrepSX}.\\
+As described in paper \cite{GIRAS}, for small queries (of size 4 and 8) the performance of \textit{GIRAS} is about the same as \textit{C-tree}. On the other hand, for larger queries, the performance is ten times better comparing to \textit{C-tree} and even better results there are for the candidate set sizes. What we may question is how it will perform comparing to \textit{GString} and \textit{GraphGrepSX}.
 
-Also, what might be interesting to measure is the index building time for \textit{GIRAS} since it is not mentioned in the paper \cite{GIRAS} and the algorithm seems quite computationally complicated.
+\begin{itemize}
+	\item \textbf{Hypothesis H2.1}: Based on the benchmark results we expect \textit{GraphGrepSX} will outperform \textit{GIRAS} despite the smaller candidate sets.
+	\item \textbf{Hypothesis H2.2}: Time to build \textit{GIRAS} index will be significantly larger compared to other methods since the algorithm seems to be computationally complicated
+\end{itemize}
+
 
 \subsection{Hypothesis 3: How the SQL and graph oriented databases perform in comparison with the domain specific solutions}
 
 We may question what performance we may get when we use an SQL or a graph database. In this case we do not need to implement any special algorithms for index building, we just use the possibilities of the databases, i.e. create a query which describes the subgraph and in case of SQL databases to build the indices to help the query process.\\
 
-We expect that the domain specific indexes will perform much better. But it might be very interesting to see how significant is the performance gap. Also, we may expect that graph databases will perform better compared to the SQL databases since they are usually optimized for storing and querying graphs.
+\begin{itemize}
+	\item \textbf{Hypothesis H3.1}: Domain specific indexes will perform much better. I.e. methods where we are building the index will perform better than SQL and graph database.
+	\item \textbf{Hypothesis H3.2}: Graph database will perform better than SQL database because it runs completely in memory and is optimized for querying graph data. 
+\end{itemize}
+
 
 \section{Description of the Experimental Work}
 
@@ -66,7 +77,9 @@ Since the \textit{GraphGrepSX} algorithm is very simple, the implementation was 
 
 We had to do only one change in the algorithm to make it applicable to our use-case. The original description of the algorithm expects that the suffix tree represents the vertex label paths. Since we need to represent even the edge labels we have changed the original suffix tree presumption so that the odd levels of the suffix tree represent the vertices and the even levels of the suffix tree represent the edges.\\
 
-The previous statement does not affect the {maximum path length parameter $l$ of \textit{GraphGrepSX} algorithm. It is still valid that this parameter sets the maximum length of the index path with regards to the number of vertices, therefore the index tree will have depth up to $2l - 1$.
+The previous statement does not affect the {maximum path length parameter $l$ of \textit{GraphGrepSX} algorithm. It is still valid that this parameter sets the maximum length of the index path with regards to the number of vertices, therefore the index tree will have depth up to $2l - 1$.\\
+	
+For our experiments, we have set the parameter $l$ to the value of 6.
 
 \subsection{GString}
 
@@ -78,7 +91,7 @@ After some research we have found out that the Chemistry Development Kit has an 
 
 The \textit{MCB} is defined as a cycle basis which consists of the shortest possible cycles. A good example might be naphthalene which we can see in Figure~\ref{fig:naphthalene}. It contains three cycles, two of size 6 and one of size 10, and any pair of these can serve as a cycle basis. On the other hand, there is only one \textit{MCB} which consist of two cycles of size 6.\\
 
-In this picture it is also clearly visible why we cannot use all the cycles. If all three cycles were represented in \textit{GString} graph, it would be very unclear what is the the relationship between these cycles and how they should be connected in \textit{GString} graph. Also, it may lead to false positives from chemistry point of view because naphthalene consist of two aromatic cycles and it does not make sense to include an information about the cycle of the size 10.
+In this picture it is also clearly visible why we cannot use all the cycles. If all three cycles were represented in \textit{GString} graph, it would be very unclear what is the the relationship between these cycles and how they should be connected in \textit{GString} graph. Also, it may lead to false positives from chemistry point of view because naphthalene consist of two aromatic cycles and it does not make sense to include an information about the cycle of the size 10.\\
 
 \begin{figure}[h]
 	\centering
@@ -106,7 +119,7 @@ During the testing we found out that it is possible to use this threshold but in
 
 What we did was to implement DFS which finds all the paths and all of these paths are included into the \textit{GString} graph. In case of methyl propionate there would be 2 independent paths, since we do not have a connection to any other structure, we start DFS in random atom with degree 1. This is quite a special case because the molecule consist only of paths. If the methyl propionate would be connected on one end to a star or a cycle, there would be 2 nodes in the \textit{GString} graph - one cycle/star and two paths connected to this structure.\\
 
-The rest of the algorithm mimics the \textit{GraphGrepSX} implementation including the notes described in section \ref{graphgrep-implementation}.
+The rest of the algorithm mimics the \textit{GraphGrepSX} implementation including the notes described in section \ref{graphgrep-implementation}. The only difference is that due to the fact that we expect significantly smaller graphs due to the condensation process, we have set the parameter $l$ to value of 5.
 
 \subsection{SQL Database}
 
@@ -125,7 +138,32 @@ The second part of the implementation is the query building. As proposed in \cit
 
 Then, in the spanning tree we find the edge with the lowest value and from this edge we start a BFS algorithm and for each edge we add the rule into the \textbf{SELECT} statement. We also need to mark all the neighbours by stating that atom ID of one edge is equal to the atom ID of the neighbour edge. The same we have to do for non-neighbours. For each such pair we have to explicitly state that their atom IDs are not equal. The same we have to do for the bonds, we need all the bonds unique so we have to state for each pair of bonds that their IDs are not equal.\\
 
-Since we are interested only in the information whether the subgraph is present in particular compound, we start the \textbf{SELECT} statement with \textbf{SELECT DISTINCT b0.COMPOUND\_ID FROM ...} which returns the set of compounds matching the subgraph query which is exactly the result we need.
+Since we are interested only in the information whether the subgraph is present in particular compound, we start the \textbf{SELECT} statement with \textbf{SELECT DISTINCT b0.COMPOUND\_ID FROM ...} which returns the set of compounds matching the subgraph query which is exactly the result we need.\\
+
+As an example of SQL query building process we may use the path of 4 carbons connected by single bonds. The \textbf{SELECT} statement looks like following:
+
+\begin{center}
+	\textbf{SELECT DISTINCT b0.compound\textunderscore id}
+\end{center}
+
+As we use only bonds table, we need to specify that we want to join three instances of bonds table, one per each bond in the query graph:
+
+\begin{center}
+	\textbf{FROM BONDS b0, BONDS b1, BONDS b2}
+\end{center}
+
+As a next step we need to specify that all bonds are distinct:
+
+\begin{center}
+	\textbf{WHERE b0.BOND\textunderscore ID != b1.BOND\textunderscore ID AND \linebreak b0.BOND\textunderscore ID != b2.BOND\textunderscore ID AND \linebreak b1.BOND\textunderscore ID != b2.BOND\textunderscore ID AND}
+\end{center}
+
+As a last step, we need to specify all the constrains for each bond. At first we specify the specification which atoms are shared with previous bonds to mimic BFS. Next, we describe the type of the bond which should help a lot with pruning. In last step we have to specify that all the atoms which were not marked in the first part are distinct, i.e. every pair of atom IDs has to be distinct:
+
+\begin{center}
+	\textbf{/*first bond*/ \linebreak b0.BONDTYPE='C-C' AND \linebreak /*second bond*/ \linebreak b1.ATOM1\textunderscore ID = b0.ATOM2\textunderscore ID AND b1.BONDTYPE='C-C' AND \linebreak b1.ATOM2\textunderscore ID != b0.ATOM1\textunderscore ID AND \linebreak b1.ATOM2\textunderscore ID != b0.ATOM2\textunderscore ID AND \linebreak /*third bond*/ \linebreak b2.ATOM1\textunderscore ID = b1.ATOM2\textunderscore ID AND b2.BONDTYPE='C-C' AND \linebreak b2.ATOM2\textunderscore ID != b0.ATOM1\textunderscore ID AND \linebreak b2.ATOM2\textunderscore ID != b0.ATOM2\textunderscore ID AND \linebreak b2.ATOM2\textunderscore ID != b1.ATOM2\textunderscore ID }
+\end{center}
+
 
 \subsection{Graph Database}
 
@@ -143,7 +181,7 @@ The first issue we had to solve was that although Oracle offers windows batch fi
 
 As a viable compromise we have decided to use the Windows 10 Subsystem for Linux utility \cite{wsl} and we have downloaded the Ubuntu system to be used in this way. On Ubuntu there were no issues with the PGX database usage.\\
 
-The client side was implemented in Windows environment using the PGX Java client library. The implementation is quite straight-forward. Instead of creating the graph in PGX for every single molecule in the database, we create one huge graph where each graph component represents one molecule. This helps the performance since we do not have to load and store the a huge number of small files, we are executing query on just one graph instead.\\
+The client side was implemented in Windows environment using the PGX Java client library. The implementation is quite straight-forward. Instead of creating the graph in PGX for every single molecule in the database, we create one huge graph for each 10 000 compounds where each graph component represents one molecule. This helps the performance since we do not have to load and store the a huge number of small files, we are executing query just on several big graphs instead.\\
 
 For each vertex we generate a unique ID, use a label to mark the representing atom symbol and we store a molecule ID as a vertex's property. For each edge we use a label to mark the type of represented bond.\\
 

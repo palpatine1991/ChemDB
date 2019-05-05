@@ -253,4 +253,14 @@ Microsoft.
 \newblock \url{https://docs.microsoft.com/en-us/windows/wsl/about}.
 \newblock [Online; accessed 25-April-2019].
 
+\bibitem{chembl}
+Chembl.
+\newblock \url{https://www.ebi.ac.uk/chembl/}.
+\newblock [Online; accessed 2-May-2019].
+
+\bibitem{smiles}
+Smiles.
+\newblock \url{http://www.daylight.com/dayhtml/doc/theory/theory.smiles.html}.
+\newblock [Online; accessed 2-May-2019].
+
 \end{thebibliography}

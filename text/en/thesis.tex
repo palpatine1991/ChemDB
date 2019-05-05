@@ -44,6 +44,7 @@
 \usepackage{booktabs}       % improved horizontal lines in tables
 \usepackage{paralist}       % improved enumerate and itemize
 \usepackage[table]{xcolor}  % typesetting in color
+\usepackage{nameref}
 
 
 \PassOptionsToPackage{hyphens}{url}
@@ -80,17 +81,17 @@
 % An optional dedication: you can thank whomever you wish (your supervisor,
 % consultant, a person who lent the software, etc.)
 \def\Dedication{%
-Dedication.
+Dedication. \textbf{TODO}
 }
 
 % Abstract (recommended length around 80-200 words; this is not a copy of your thesis assignment!)
 \def\Abstract{%
-Abstract.
+The purpose of this thesis is to create an overview of research about querying chemical databases and to validate or invalidate its results. There is no found research which would compare the performance and memory usage of the best performing approaches on the same data set. In this thesis, we address this lack of information and we create an un-biased benchmark of several index building methods for subgraph querying of chemical databases. Also, we compare the results of such benchmark with the performance results of SQL and graph database.
 }
 
 % 3 to 5 keywords (recommended), each enclosed in curly braces
 \def\Keywords{%
-{key} {words}
+{Chemical database,} {Subgraph querying,} {Graph database,} {Subgraph isomorphism}
 }
 
 %% The hyperref package for clickable links in PDF and also for storing
@@ -136,6 +137,25 @@ Abstract.
 %%% In mathematical theses, it could be better to move the list of abbreviations to the beginning of the thesis.
 \chapwithtoc{List of Abbreviations}
 
+\begin{itemize}
+	\item DFS - Depth-First search
+	\item DAG - Directed Acyclic Graph
+	\item DBMS - DataBase Management System
+	\item SQL - Structured Query Language
+	\item BFS - Breadth-First Search
+	\item REST - REpresentational State Transfer
+	\item CDK - Chemistry Development Kit
+	\item SSSR - Smallest Set of Smallest Rings
+	\item MCB - Minimum Cycle Basis
+	\item API - Application Programming Interface
+	\item JDBC - Java DataBase Connectivity
+	\item PGX - Parallel Graph analytiX
+	\item PGQL - Property Graph Query Language
+	\item ACID - Atomicity, Consistency, Isolation, Durability
+	\item CPU - Central Processing Unit
+	\item RAM - Random Access Memory
+\end{itemize}
+
 %%% Attachments to the master thesis, if any. Each attachment must be
 %%% referred to at least once from the text of the thesis. Attachments
 %%% are numbered.
@@ -147,6 +167,104 @@ Abstract.
 %%% source code, data files, interactive charts, etc.). Electronic attachments
 %%% should be uploaded to SIS and optionally also included in the thesis on a~CD/DVD.
 \chapwithtoc{Attachments}
+\section*{Set of tested queries} \label{queries}
+\subsection*{Queries of size 4}
+\begin{enumerate}
+	\item c:c:c:c
+	\item C=NCC
+	\item S(=O)(=O)C
+	\item C=CC=C
+	\item N=CCC
+	\item CN=CO
+	\item SCCC
+	\item c:n:c:c
+	\item CSCC
+	\item CSC=C
+\end{enumerate}
+
+\subsection*{Queries of size 8}
+\begin{enumerate}
+	\item COc1ccccc1
+	\item CCCCCCCC
+	\item c:c:c:c:c:c:c:c
+	\item S(CCC)(CCC)(C)
+	\item C(=O)NCCCCC
+	\item c1cc(C(=O))ccc1
+	\item CCC(=O)C(=O)NC
+	\item c2c(Cl)cccc2Cl
+	\item C(C)(C)C(C)(C)C(=O)
+	\item S(CNCC)(C=O)(C)
+\end{enumerate}
+
+\newpage
+\subsection*{Queries of size 16}
+\begin{enumerate}
+	\item CNC(=O)c1cc(C(=O)CCCC)ccc1
+	\item CCCCCCCCCCCCCCCC
+	\item c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c
+	\item c1cccc2c1ccc3c2cccc3CC
+	\item S(CC)(=O)(=O)Nc1cc(CCCC)ccc1
+	\item C(C)(C)C(C)(C)C(C)(C)C(C)(CCCCC)
+	\item C(O)CCCC(=C)CCCc1ccccc1
+	\item CCCCCNCCCCCCCNCC
+	\item c1ccccc1CCc2cc(CC)ccc2
+	\item Oc1cccc2Cc3ccccc3C(=O)c12
+\end{enumerate}
+
+\subsection*{Queries of size 16}
+\begin{enumerate}
+	\item C(C)NC(=O)C(NC(=O)OC)CCCCNC(=O)c1ccccc1
+	\item CCCCCCCCCCCCCCCCCCCCCCCC
+	\item c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c:c
+	\item c1cccc2c1ccc3c2ccc4c3ccc5c4cccc5CC
+	\item S(C)(=O)(=O)Nc1cc(C(c2c(=O)oc(CC)cc2)CCC)ccc1
+	\item C(C)(C)C(C)(C)CCCC(C(NCCCCC)=O)(CCCCCC)
+	\item C(O)C(O)C(O)C(O)CCCC(=C)C(O)C(C)Cc1ccccc1
+	\item CCCCCNCCCCCCCNCCCCCCCCCC
+	\item c1ccccc1CCc2cc(CCCNc3ccccc3)ccc2
+	\item Oc1cccc2Cc3ccc(Cc4ccccc4)c(O)c3C(=O)c12
+\end{enumerate}
+
+\newpage
+\section*{Results of measurements} \label{measurements}
+\subsection*{Index building}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\textwidth]{../img/indexBuilding.png}
+\end{figure}
+
+\newpage
+\subsection*{Queries of size 4}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{../img/q4.png}
+\end{figure}
+
+\newpage
+\subsection*{Queries of size 8}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{../img/q8.png}
+\end{figure}
+
+\newpage
+\subsection*{Queries of size 16}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{../img/q16.png}
+\end{figure}
+
+\newpage
+\subsection*{Queries of size 24}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{../img/q24.png}
+\end{figure}
 
 \openright
 \end{document}

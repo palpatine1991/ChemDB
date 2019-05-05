@@ -127,11 +127,11 @@ The GIRAS itself then calls the modified gSpan. It starts for $f=1$. After each 
 
 Although it is not discussed in the paper \cite{GIRAS} what data structure it uses for the index representation, we found out from the source code obtained from Dr. Azaouzi, the author of the described research, that it uses very similar data structure which was described in \textit{gIndex} section, as well as the same technique for the querying process.
 
-\subsection{GString}
+\subsection{GString} \label{gstring}
 
 All other methods can be used in any graph database. On the other hand, GString method is very specific for the organic chemical databases (but can be internally modified to support different graph databases with specific content).\\
 
-The main ideas come from the knowledge of common structures of the graphs in the database. The chemical compounds consist of 3 types of semantic structures - paths, cycles and stars (a central node with a fanout). Each chemical compound can be converted into a graph whose nodes are not atoms but one of the mentioned structures. This converted graph is significantly smaller than the original one.\\
+The main ideas come from the knowledge of common structures of the graphs in the database. The chemical compounds consist of 3 types of semantic structures - paths, cycles and stars (a central node with a fan-out). Each chemical compound can be converted into a graph whose nodes are not atoms but one of the mentioned structures. This converted graph is significantly smaller than the original one.\\
 
 The other observation is that we can omit the hydrogens since their number can be easily computed and we can omit the labels of carbon atoms and single (saturated) bonds.\\
 
