@@ -34,16 +34,17 @@
 \contentsline {subsection}{\numberline {3.3.4}Graph Database}{28}{subsection.3.3.4}% 
 \contentsline {subsection}{\numberline {3.3.5}GIRAS}{29}{subsection.3.3.5}% 
 \contentsline {chapter}{\numberline {4}Experimental Results}{31}{chapter.4}% 
-\contentsline {section}{\numberline {4.1}Index building time}{32}{section.4.1}% 
-\contentsline {section}{\numberline {4.2}Index and data size}{33}{section.4.2}% 
-\contentsline {section}{\numberline {4.3}Candidate set creation time}{34}{section.4.3}% 
-\contentsline {section}{\numberline {4.4}Verification time}{35}{section.4.4}% 
-\contentsline {section}{\numberline {4.5}Hit ratio of candidate set}{36}{section.4.5}% 
-\contentsline {section}{\numberline {4.6}Query execution time}{37}{section.4.6}% 
-\contentsline {section}{\numberline {4.7}Hypotheses results}{38}{section.4.7}% 
+\contentsline {section}{\numberline {4.1}Index Building Time}{32}{section.4.1}% 
+\contentsline {section}{\numberline {4.2}Index and Data Size}{33}{section.4.2}% 
+\contentsline {section}{\numberline {4.3}Candidate Set Creation Time}{34}{section.4.3}% 
+\contentsline {section}{\numberline {4.4}Verification Time}{35}{section.4.4}% 
+\contentsline {section}{\numberline {4.5}Hit Ratio of Candidate Set}{36}{section.4.5}% 
+\contentsline {section}{\numberline {4.6}Query Execution Time}{37}{section.4.6}% 
+\contentsline {section}{\numberline {4.7}Hypotheses Results}{38}{section.4.7}% 
 \contentsline {chapter}{Conclusion}{40}{chapter*.4}% 
-\contentsline {chapter}{Bibliography}{41}{chapter*.5}% 
-\contentsline {chapter}{List of Figures}{45}{chapter*.6}% 
-\contentsline {chapter}{List of Tables}{46}{chapter*.7}% 
-\contentsline {chapter}{List of Abbreviations}{47}{chapter*.8}% 
-\contentsline {chapter}{Attachments}{48}{chapter*.9}% 
+\contentsline {section}{Future Work}{41}{section*.5}% 
+\contentsline {chapter}{Bibliography}{42}{chapter*.6}% 
+\contentsline {chapter}{List of Figures}{46}{chapter*.7}% 
+\contentsline {chapter}{List of Tables}{47}{chapter*.8}% 
+\contentsline {chapter}{List of Abbreviations}{48}{chapter*.9}% 
+\contentsline {chapter}{Attachments}{49}{chapter*.10}% 

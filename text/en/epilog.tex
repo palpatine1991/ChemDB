@@ -1,10 +1,30 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-Possible continuation o research:
+In this thesis we have explored the current research about the subgraph querying of chemical databases. We have identified the most popular and the most performing indexing techniques for such purpose.\\
 
- - What about combining the indices with graph databases? 
+We have identified three indexing algorithms - \textit{GraphGrepSX}, \textit{GString} and \textit{GIRAS} - which were not compared, yet, in any related paper and which won the performance tests in the benchmarks presented as a part of the papers which describes such algorithms. We have implemented two of these algorithms - \textit{GraphGrepSX} and \textit{GString} - and we have obtained the \textit{GIRAS} source code from its author.\\
 
- - Do some performance comparison of commercially used solutions with the other solutions.
+We have created a benchmark of the mentioned indexing methods which uses a data set of 100 000 chemical compounds. In this benchmark we measure the index size and its creation time, efficiency of the index and the total time needed for queries of various sizes.\\
+
+We have also implemented a framework for testing the SQL and PGX\linebreak databases on the same data set to compare the graph oriented indexing methods to the solutions which are designed to store and query generic data.\\
+
+We have found many of the results of related papers not completely valid. We have found out that \textit{GIRAS} does not provide complete indexing and therefore we can identify a lot of queries with invalid results. Also, we have found out that this method is barely usable on large real-world data sets since the time needed for index to be built is enormous.\\
+
+For \textit{GString}, we have found out that its method for condensing the graph size is very efficient in the matter of acceleration the index building process, on the other hand, it omits a lot of valid results since the query graph's condensed graph does not have to match the condensed graph of actual compound which does contain the graph query as its subgraph.\\
+
+Also, one of the main reasons of graph condensation in \textit{GString} is to make the index smaller compared to \textit{GraphGrepSX}. We have proved that on real-world data set this is not a valid presumption because the size of the vertex label set on such database is significantly smaller compared to the size of distinct vertex labels on condensed graphs where we introduce a new label for each distinct size of path, cycle or star respectively.\\
+
+We have found PGX as a viable and very well performing solution for small queries. On the other hand, the performance for larger queries is getting worse exponentially and it becomes barely usable even for queries of size 16. We have reported this issue to Oracle. This result seems to be very close the observation made by Hoksza et al. in \cite{Hoksza}\\
+
+In case of other two methods - SQL database and \textit{GraphGrepSX} - we have been surprised by their performance. Even though, SQL database has been the only technique which does use disk for storing the data, its performance is not bad at all and it seems to be a viable solution for data sets which cannot fit into the memory.\\
+
+Although \textit{GraphGrepSX} is much simpler indexing technique compared to the other described ones, we have identified it as best performing. It is not anyhow customized to be used for chemical databases and can be utilized for any data which can be described by graphs.
+
+\section*{Future Work}
+\addcontentsline{toc}{section}{Future Work}
+All described indexing techniques do work only in memory. This is a significant issue for big databases. It might be an interesting research to find out the possibilities of improving the described methods to store the indices on the disk. Or even better, divide the chemical compounds into some classes and store these separately in different indices.\\
+
+The other interesting research might be to compare our benchmark results to the performance of the commercially used solutions which we have described in the Analysis Section of this thesis. 
 
  
