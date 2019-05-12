@@ -44,6 +44,8 @@
 \usepackage{booktabs}       % improved horizontal lines in tables
 \usepackage{paralist}       % improved enumerate and itemize
 \usepackage[table]{xcolor}  % typesetting in color
+\usepackage[a-2u]{pdfx}
+\usepackage{lmodern}
 \usepackage{nameref}
 
 
@@ -91,17 +93,12 @@ The purpose of this thesis is to perform an analysis of approaches to querying c
 
 % 3 to 5 keywords (recommended), each enclosed in curly braces
 \def\Keywords{%
-{Chemical database,} {Subgraph querying,} {Graph database,} {Subgraph isomorphism}
+{Chemical database,} {Chemical Compounds,} {Benchmark,} {Subgraph querying,} {Graph database,} {Subgraph isomorphism}
 }
 
 %% The hyperref package for clickable links in PDF and also for storing
 %% metadata to PDF (including the table of contents).
-\usepackage[pdftex,unicode]{hyperref}   % Must follow all other packages
-\hypersetup{breaklinks=true}
-\hypersetup{pdftitle={\ThesisTitle}}
-\hypersetup{pdfauthor={\ThesisAuthor}}
-\hypersetup{pdfkeywords=\Keywords}
-\hypersetup{urlcolor=blue}
+
 
 % Definitions of macros (see description inside)
 \include{macros}
@@ -231,7 +228,7 @@ The purpose of this thesis is to perform an analysis of approaches to querying c
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.75\textwidth]{../img/indexBuilding.png}
+	\includegraphics[width=0.75\textwidth]{../img/indexBuilding.pdf}
 \end{figure}
 
 \newpage
@@ -239,7 +236,7 @@ The purpose of this thesis is to perform an analysis of approaches to querying c
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{../img/q4.png}
+	\includegraphics[width=1\textwidth]{../img/q4.pdf}
 \end{figure}
 
 \newpage
@@ -247,7 +244,7 @@ The purpose of this thesis is to perform an analysis of approaches to querying c
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{../img/q8.png}
+	\includegraphics[width=1\textwidth]{../img/q8.pdf}
 \end{figure}
 
 \newpage
@@ -255,7 +252,7 @@ The purpose of this thesis is to perform an analysis of approaches to querying c
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{../img/q16.png}
+	\includegraphics[width=1\textwidth]{../img/q16.pdf}
 \end{figure}
 
 \newpage
@@ -263,7 +260,7 @@ The purpose of this thesis is to perform an analysis of approaches to querying c
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{../img/q24.png}
+	\includegraphics[width=1\textwidth]{../img/q24.pdf}
 \end{figure}
 
 \openright
